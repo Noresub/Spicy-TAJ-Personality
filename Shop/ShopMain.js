@@ -7,7 +7,7 @@
 	let wantExit = false;
 	while (!wantExit) {
 		wantExit = false;
-		sendVirtualAssistantMessage("You have " + getVar(VARIABLE_GOLD, 0) + " gold");
+		sendVirtualAssistantMessage("You have " + getVar(VARIABLE.GOLD, 0) + " gold");
 		sendVirtualAssistantMessage("You can buy the following things %SlaveName%:");		
 		sendVirtualAssistantMessages(getMainShopItemsMessages(), false);
 		showMenuButtons(getMainShopItems());
