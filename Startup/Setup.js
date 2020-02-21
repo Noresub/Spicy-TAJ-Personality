@@ -505,7 +505,7 @@
     answer = createInput();
     while (true) {
         if (answer.isLike("yes")) {
-            setVar("shopUnlockAll", true);
+            setVar(VARIABLE_SHOP_UNLOCK_ALL, true);
             sendVirtualAssistantMessage("You might regret this %Grin%");
             break;
         } else if (answer.isLike("no")) {

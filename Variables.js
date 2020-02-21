@@ -258,3 +258,37 @@ const CATEGORY_PAIN = 'Pain';
 const CATEGORY_SLAVE = 'Slave';
 const CATEGORY_SISSY = 'Sissy';
 const CATEGORY_TEASE = 'Tease';
+
+//Shop
+const VARIABLE_SHOP_UNLOCK_ALL = 'shopUnlockAll';
+
+const VARIABLE_CHASTITY_PACK = 'chastityPack';
+const VARIABLE_HUMILIATION_PACK = 'humiliationPack';
+const VARIABLE_PAIN_PACK = 'painPack';
+const VARIABLE_SLAVE_PACK = 'slavePack';
+const VARIABLE_TEASE_PACK = 'teasePack';
+const VARIABLE_CHORE_PACK = 'chorePack';
+
+
+const VARIABLE_GLITTER_PACK = 'glitterPack';
+
+const VARIABLE_ENDGAME_PACK1 = 'endGamePack1';
+const VARIABLE_ENDGAME_PACK2 = 'endGamePack2';
+const VARIABLE_ENDGAME_PACK3 = 'endGamePack3';
+const VARIABLE_ENDGAME_PACK4 = 'endGamePack4';
+const VARIABLE_ENDGAME_PACK5 = 'endGamePack5';
+const VARIABLE_ENDGAME_PACK6 = 'endGamePack6';
+const VARIABLE_ENDGAME_PACK7 = 'endGamePack7';
+const VARIABLE_ENDGAME_PACK8 = 'endGamePack8';
+const VARIABLE_ENDGAME_PACK9 = 'endGamePack9';
+const VARIABLE_ENDGAME_PACK10 = 'endGamePack10';
+const VARIABLE_ENDGAME_PACK11 = 'endGamePack11';
+
+const VARIABLE_EXTRA_SPANKING_IMPLEMENT = "extraSpankingImlement";
+
+const VARIABLE_SPANKZCHOIR_SUBSCRIBTION = "spankzChoirSubscribtion";
+
+
+
+
+

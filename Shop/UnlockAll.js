@@ -1,0 +1,3 @@
+{
+	setVar(VARIABLE_SHOP_UNLOCK_ALL, true)
+}

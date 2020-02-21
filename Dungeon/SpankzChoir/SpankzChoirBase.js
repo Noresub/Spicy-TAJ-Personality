@@ -141,7 +141,7 @@ if (getDate("SpankzChoirSubscription")==true) {
 						//(HighBidder1)
 						sendDungeonMessage(" Let me just see who actually won "); 
 						
-						choice= randomInteger(1,8);
+						choice= 6;//randomInteger(1,8);
 
 						switch(choice) {		
 						case 1:
@@ -214,7 +214,7 @@ if (getDate("SpankzChoirSubscription")==true) {
 										sendDungeonMessage(" Hi %SubName% ");
 										delVar("AuctionActive");
 										sendDungeonMessage(" Well lets see who won your %Ass% ");
-										Choice = randomInteger(1,8)
+										Choice = 7;//randomInteger(1,8)
 										switch (Choice) {
 									
 										case 1:

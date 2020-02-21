@@ -30,6 +30,7 @@ run("Stroking/Edge.js");
 run("Stroking/Anal.js");
 run("Stroking/Blowing.js");
 run("Session/Modules/Pain/SmallPunishment.js");
+run("Dungeon/Punishments/PunishmentBuilder.js");
 
 //Dynamic module stuff
 run("Session/Modules/Dynamic/DynamicModuleBuilder.js");
@@ -66,13 +67,16 @@ run("Rules/DynamicRules.js");
 
 run("Session/Modules/Games/Games.js");
 
+//Shop
+run("Shop/ShopItems.js");
+
 
 //Update devotion only if the setup is complete which means the variable must exist
 if(isVar("subDevotion")) {
     run("Settings/UpdateDevotion.js");
 }
 
-if(getVar("shopUnlockAll", false)) run("Shop/UnlockAll.js");
+if(getVar(VARIABLE_SHOP_UNLOCK_ALL, false)) run("Shop/UnlockAll.js");
 
 let endMillis = new Date().getTime();
 let waitTime = 3500;

@@ -1,3 +1,26 @@
+function addGold(amount) {
+    const gold = getGold();
+
+    if(gold + amount > 0) {
+        setVar(VARIABLE_GOLD, gold + amount);
+    } else {
+        setVar(VARIABLE_GOLD, 0);
+    }
+}
+
+function trySpendGold(amount) {
+	const gold = getGold();
+	
+	if (gold >= price) {
+		setVar(VARIABLE_GOLD, gold - price);
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+}
+
 function rewardGoldHigh() {
 	switch (getMood()) {
 		case VERY_PLEASED_MOOD:

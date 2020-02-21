@@ -166,16 +166,6 @@ function getPunishmentPointMultiplierChange() {
     return Math.max(maxSubtraction, 0.1*(mood*getStrictnessForCharacter() + 10) - 0.1*hoursSinceLastChange/(Math.max(1, getStrictnessForCharacter()) + 1));
 }
 
-function addGold(amount) {
-    const gold = getGold();
-
-    if(gold + amount > 0) {
-        setVar(VARIABLE_GOLD, gold + amount);
-    } else {
-        setVar(VARIABLE_GOLD, 0);
-    }
-}
-
 function setFullTime() {
     return setVar(VARIABLE_SLAVE_TYPE, 1);
 }

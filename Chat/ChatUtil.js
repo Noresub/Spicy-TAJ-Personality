@@ -80,6 +80,20 @@ function sendVirtualAssistantMessage(message, wait, skipImage) {
     }
 }
 
+function sendVirtualAssistantMessages(messages, wait, skipImage) {
+	for (let i = 0; i < messages.length; i++){
+		sendVirtualAssistantMessage(messages[i], wait, skipImage);
+	}
+}
+
+function showMenuButtons(menu){  //idk how to do it better
+	let answer = sendInput("%Giggles%", 1);
+	answer.clearOptions();
+	for (let i = 0; i < menu.length; i++){
+		answer.addOption(menu[i]);
+	}	
+}
+
 function sendSystemMessage(message) {
     let text = new javafx.scene.text.Text(message);
     text.setFill(javafx.scene.paint.Color.RED);

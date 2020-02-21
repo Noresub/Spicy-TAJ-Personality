@@ -40,7 +40,10 @@
                 sendVirtualAssistantMessage(getWelcomeMessage(), false);
                 break;
             } else if (lobbyAnswer.isLike("shop", "buy", "purchase", "spent", "gold", "store")) {
-                sendVirtualAssistantMessage("This is not supported yet!");
+				lobbyAnswer.clearOptions();
+				run("Shop/ShopMain.js");
+				sendVirtualAssistantMessage(getWelcomeMessage(), false);
+                //sendVirtualAssistantMessage("This is not supported yet!");
                 break;
             } else if (lobbyAnswer.isLike("fitness", "health")) {
                 lobbyAnswer.clearOptions();
