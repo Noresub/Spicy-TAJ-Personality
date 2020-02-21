@@ -7,11 +7,11 @@ const GAG_TYPE_DILDO_GAG = createToy('dildo gag');
 let currentGagType = GAG_TYPE_BALL_GAG;
 
 function isGaged() {
-    return getVar(VARIABLE_IS_GAGED, false);
+    return getVar(VARIABLE.IS_GAGED, false);
 }
 
 function setGaged(gaged) {
-    return setTempVar(VARIABLE_IS_GAGED, gaged);
+    return setTempVar(VARIABLE.IS_GAGED, gaged);
 }
 
 function hasBallGag() {
@@ -137,7 +137,7 @@ function putInGag(gagType = GAG_TYPE_BALL_GAG, addPinToTongue = false) {
 
     if (addPinToTongue && BODY_PART_TONGUE.currentClamps === 0) {
         if (fetchToy('clothespin', undefined, 1)) {
-            putClampsOn(1, BODY_PART_TONGUE, false, true);
+            putClampsOnOneSide(1, BODY_PART_TONGUE);
         }
     }
 
@@ -216,10 +216,12 @@ function putInGag(gagType = GAG_TYPE_BALL_GAG, addPinToTongue = false) {
 
 //TODO: Supply reason why to remove so teasing can be done like (Remove the gag, I want your mouth free for what's about to come next)
 function removeGag() {
+    let clampOnTongue = false;
     if (BODY_PART_TONGUE.currentClamps > 0) {
         sendMessageBasedOnSender('%SlaveName%');
         sendMessageBasedOnSender('Remove all clamps from your tongue %EmoteHappy%', 5);
         BODY_PART_TONGUE.currentClamps = 0;
+        clampOnTongue = true;
     }
 
     sendMessageBasedOnSender("%SlaveName% go ahead and remove that gag from your mouth");
@@ -238,14 +240,47 @@ function removeGag() {
 
     sendMessageBasedOnSender("Put the gag aside for now");
     setGaged(false);
+
+    //TODO: Implement but make sure to check if mouth is needed afterwards
+    /*if(feelsLikePunishingSlave()) {
+        sendAlreadyKnowWhatsNext('clamp', 'tongue');
+        putClampsOnOneSide(1, BODY_PART_TONGUE);
+        sendMessage('Did you you really think that I was gonna remove it from your tongue alongside the gag? Poor %SlaveName%');
+    }*/
+}
+
+function sendConsideredRemovingGag() {
+    sendMessage(random('I was considering removing that gag from your mouth', 'I was thinking about removing that gag from your mouth') + ' and letting you speak' + random('for now', ''));
+    sendMessage(random('However...', 'But...'));
+
+    switch(randomInteger(0, 3)) {
+        case 0:
+            sendMessage('I don\'t think you earned that right yet');
+            break;
+        case 1:
+            sendMessage('I am just not in the mood of hearing any sound from you right now');
+            break;
+        case 2:
+            //QUALITY: Generalise
+            if(sendYesOrNoQuestion(random('You haven\'t earned that right yet, have you?', 'You haven\'t been good enough, have you?', 'You haven\'t pleased me enough, have you?'))) {
+                sendMessage('I don\'t think you have');
+                sendMessage('And now shut up %SlaveName% or you\'ll regret it');
+            } else {
+                sendMessage('Indeed, you really haven\'t %Lol%');
+            }
+            break;
+        case 3:
+            sendMessage('You shouldn\'t speak now anyway');
+            break;
+    }
 }
 
 function isGagPlay() {
-    return getVar(VARIABLE_TOY_GAG_INTERACTION_MODE) === TOY_BOTH_MODE || getVar(VARIABLE_TOY_GAG_INTERACTION_MODE) === TOY_PLAY_MODE;
+    return getVar(VARIABLE.TOY_GAG_INTERACTION_MODE) === TOY_BOTH_MODE || getVar(VARIABLE.TOY_GAG_INTERACTION_MODE) === TOY_PLAY_MODE;
 }
 
 function isGagPunish() {
-    return getVar(VARIABLE_TOY_GAG_INTERACTION_MODE) === TOY_BOTH_MODE || getVar(VARIABLE_TOY_GAG_INTERACTION_MODE) === TOY_PUNISHMENT_MODE;
+    return getVar(VARIABLE.TOY_GAG_INTERACTION_MODE) === TOY_BOTH_MODE || getVar(VARIABLE.TOY_GAG_INTERACTION_MODE) === TOY_PUNISHMENT_MODE;
 }
 
 function setupGags(domChose) {

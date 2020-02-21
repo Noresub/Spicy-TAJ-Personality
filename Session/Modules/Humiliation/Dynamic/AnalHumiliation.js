@@ -6,100 +6,107 @@
         if (getAnalLimit() == LIMIT_NEVER) {
             //Try to find a different module
             tryRunModuleFetchId();
-        }
-
-        sendMessage("Let's see %SlaveName%");
-        sendMessage(random("I think it's time to work that ass", "I guess it's time to work on your ass", "Let's have some fun with your ass shall we?", "Let\'s play a fun little game... with your ass %Grin%"));
-
-        //Run ass intro
-        if (!isVar('assIntro')) {
-            runAssIntro();
-        }
-
-        let plugPlay = hasButtplugToy() && isChance(50) && getVar(VARIABLE_ASS_LEVEL) >= 5;
-        let dildoPlay = hasDildoToy() && getVar(VARIABLE_ASS_LEVEL) >= 5;
-
-        if (isPlugged()) {
-            if (isChance(50)) {
-                sendMessage("Plugging you beforehand was a great idea");
-                sendMessage("Because...");
-                sendMessage("Now we can start with the bigger stuff right away %Grin%");
+        } else {
+            if(!isVar(VARIABLE.ENEMA_INTRO) && hasEnemaKit() && isVar('assIntro')) {
+                //QUALITY: Based on whether contact 1 appeared yet etc.
+                runEnemaIntro();
+                sendMessage('Now that that\'s settled');
             } else {
-                sendMessage("You look quite pathetic plugged up as you are %Lol%");
+                sendMessage("Let's see %SlaveName%");
             }
 
-            let tasks = !BUTTPLUG_TOY.getLastUsage().addMinute(5).hasPassed();
+            sendMessage(random("I think it's time to work that ass", "I guess it's time to work on your ass", "Let's have some fun with your ass shall we?", "Let\'s play a fun little game... with your ass %Grin%"));
 
-            if (!tasks) {
-                if (isChance(25)) {
-                    if (currentPlug !== biggestButtplug) {
-                        tasks = increasePlugSize();
+            //Run ass intro
+            if (!isVar('assIntro')) {
+                runAssIntro();
+            }
+
+            let plugPlay = hasButtplugToy() && isChance(50) && getVar(VARIABLE.ASS_LEVEL) >= 5;
+            let dildoPlay = hasDildoToy() && getVar(VARIABLE.ASS_LEVEL) >= 5;
+
+            if (isPlugged()) {
+                if (isChance(50)) {
+                    sendMessage("Plugging you beforehand was a great idea");
+                    sendMessage("Because...");
+                    sendMessage("Now we can start with the bigger stuff right away %Grin%");
+                } else {
+                    sendMessage("You look quite pathetic plugged up as you are %Lol%");
+                }
+
+                let tasks = !BUTTPLUG_TOY.getLastUsage().addMinute(5).hasPassed();
+
+                if (!tasks) {
+                    if (isChance(25)) {
+                        if (currentPlug !== biggestButtplug) {
+                            tasks = increasePlugSize();
+                        }
+                    } else {
+                        removeButtplug();
                     }
-                } else {
-                    removeButtplug();
                 }
-            }
 
-            if (tasks) {
-                sendMessage("However I want you to keep that plug inside for now...");
-                sendMessage("A bit more of a warmup can never be too bad right?");
-                sendMessage("But let's not waste the time we are waiting for your ass to stretch though");
-                startTimePassTasks(5);
-                sendMessage("I think we waited long enough. Let's get back to your ass");
-                removeButtplug();
-            }
-        } else {
-            let missingPlug = false;
-            if (plugPlay) {
-                sendMessage("Let's start by stretching that ass of yours");
-                if (!putInButtplug()) {
-                    missingPlug = true;
-
-                    changeMeritHigh(true);
-                    sendMessage("That's really bad %SlaveName%");
-                    sendMessage("You must always have your toys around or tell me preemptively that you are not able to bring your toys to a session");
-
-                    sendMessage("Well then...");
-                } else {
-                    sendMessage("Lets spend the time that the plug is stretching your ass with something useful");
+                if (tasks) {
+                    sendMessage("However I want you to keep that plug inside for now...");
+                    sendMessage("A bit more of a warmup can never be too bad right?");
+                    sendMessage("But let's not waste the time we are waiting for your ass to stretch though");
                     startTimePassTasks(5);
-                    sendMessage("I believe we waited long enough and your ass is ready for more now");
+                    sendMessage("I think we waited long enough. Let's get back to your ass");
                     removeButtplug();
                 }
-            }
-        }
-
-        let toy = getAnalDildo().name;
-
-        if (dildoPlay) {
-            if (!fetchDildoToy(toy)) {
-                lastAlternativeFingerPlay();
-                toy = "finger";
-                dildoPlay = false;
             } else {
-                setDate(VARIABLE_LAST_DILDO_SWAP_DATE);
-                sendMessage("Okay let's get started then");
+                let missingPlug = false;
+                if (plugPlay) {
+                    sendMessage("Let's start by stretching that ass of yours");
+                    if (!putInButtplug()) {
+                        missingPlug = true;
+
+                        changeMeritHigh(true);
+                        sendMessage("That's really bad %SlaveName%");
+                        sendMessage("You must always have your toys around or tell me preemptively that you are not able to bring your toys to a session");
+
+                        sendMessage("Well then...");
+                    } else {
+                        sendMessage("Lets spend the time that the plug is stretching your ass with something useful");
+                        startTimePassTasks(5);
+                        sendMessage("I believe we waited long enough and your ass is ready for more now");
+                        removeButtplug();
+                    }
+                }
             }
-        } else {
-            toy = "finger";
+
+            let toy = getAnalDildo().name;
+
+            if (dildoPlay) {
+                if (!fetchDildoToy(toy)) {
+                    lastAlternativeFingerPlay();
+                    toy = "finger";
+                    dildoPlay = false;
+                } else {
+                    setDate(VARIABLE.LAST_DILDO_SWAP_DATE);
+                    sendMessage("Okay let's get started then");
+                }
+            } else {
+                toy = "finger";
+            }
+
+            const lubeType = getAssLubeType(getMood());
+
+            if (lubeType == ANY_LUBE) {
+                lubeUpToyWithLube(toy);
+            } else if (lubeType === SPIT_LUBE) {
+                lubeUpToyWithSpit(toy, toy != 'finger');
+            } else if (lubeType === TOOTHPASE_LUBE) {
+                lubeUpToyWithToothpaste(toy);
+            } else if (lubeType === TIGER_HOT_LUBE) {
+                lubeUpToyWithTigerHot(toy);
+            } else {
+                sendMessage("Today I don't you to use any lube %Grin%");
+            }
+
+            runAssCrackPreparation(toy);
+            startPenetratingSession(toy);
         }
-
-        const lubeType = getAssLubeType(getMood());
-
-        if (lubeType == ANY_LUBE) {
-            lubeUpToyWithLube(toy);
-        } else if (lubeType === SPIT_LUBE) {
-            lubeUpToyWithSpit(toy, toy != 'finger');
-        } else if (lubeType === TOOTHPASE_LUBE) {
-            lubeUpToyWithToothpaste(toy);
-        } else if (lubeType === TIGER_HOT_LUBE) {
-            lubeUpToyWithTigerHot(toy);
-        } else {
-            sendMessage("Today I don't you to use any lube %Grin%");
-        }
-
-        runAssCrackPreparation(toy);
-        startPenetratingSession(toy);
     }
 }
 
@@ -137,7 +144,7 @@ function startPenetratingSession(toy) {
     sendMessage("And pull it all the way out again");
 
     //Sit on dildo
-    if (!finger && getVar(VARIABLE_ASS_LEVEL) >= 15 && isChance(20)) {
+    if (!finger && getVar(VARIABLE.ASS_LEVEL) >= 15 && isChance(20)) {
         sendMessage('Now I want you to to place it in front of you... %Grin%');
         sendMessage('%KnowWhatsNext%');
 
@@ -161,6 +168,8 @@ function startPenetratingSession(toy) {
     const durationMinutes = getAnalSessionLength();
     const date = setDate();
 
+    sendDebugMessage('Going for ' + durationMinutes + ' minutes of anal session');
+
     while (!date.clone().addMinute(durationMinutes).hasPassed() && appendModule(toy)) {
     }
 
@@ -171,12 +180,12 @@ function startPenetratingSession(toy) {
 
 function getAnalSessionLength() {
     //Max one third of session anal
-    let maxMinutes = Math.ceil(getVar(VARIABLE_DEVOTION) / 3);
+    let maxMinutes = Math.ceil(getVar(VARIABLE.DEVOTION) / 3);
 
     //TODO: Anal themed session
 
-    let min = Math.max(5, getVar(VARIABLE_ASS_LEVEL) / 2);
-    let max = Math.max(10, getVar(VARIABLE_ASS_LEVEL));
+    let min = Math.max(5, getVar(VARIABLE.ASS_LEVEL) / 2);
+    let max = Math.max(10, getVar(VARIABLE.ASS_LEVEL));
 
     let mood = getMood();
 
@@ -190,7 +199,7 @@ function getAnalSessionLength() {
 
     //Domme mode
     if (isVar('analWhoreMode')) {
-        maxMinutes = Math.ceil(getVar(VARIABLE_DEVOTION) / 2);
+        maxMinutes = Math.ceil(getVar(VARIABLE.DEVOTION) / 2);
 
         min *= 1.5;
         max *= 1.5;
@@ -323,33 +332,36 @@ function appendPenetratingSession(toy) {
     //TODO: Numbers based on experience
     let iterations = randomInteger(2, 4);
     while (iterations > 0) {
-        startAnal(30, randomInteger(120, 240));
+        startAnal(getInitialBPM(), randomInteger(120, 240));
         iterations--;
 
-        if (isChance(50) || !blowjob) {
-            sendMessage("Let's change the position shall we? %Grin%");
-            toy = choosePosition(toy, currentBlowjob);
-            sendMessage("And straight back to fucking that ass of yours");
+        //No new instructions if this loop is about to end
+        if(iterations > 0) {
+            if (isChance(50) || !blowjob) {
+                sendMessage("Let's change the position shall we? %Grin%");
+                toy = choosePosition(toy, currentBlowjob);
+                sendMessage("And straight back to fucking that ass of yours");
 
-            if (currentBlowjob) {
-                sendMessage("And don't forget to keep that mouth " + random("busy", "occupied", "used", "filled") + " too %Lol%");
-            }
-        } else {
-            if (isChance(50) && currentBlowjob) {
-                stopBlowjobFuckingInstructions();
-                currentBlowjob = false;
+                if (currentBlowjob) {
+                    sendMessage("And don't forget to keep that mouth " + random("busy", "occupied", "used", "filled") + " too %Lol%");
+                }
             } else {
-                startBlowjobFuckingInstructions(toy);
+                if (isChance(50) && currentBlowjob) {
+                    stopBlowjobFuckingInstructions();
+                    currentBlowjob = false;
+                } else {
+                    startBlowjobFuckingInstructions(toy);
+                }
+
+                sendMessage("And back to fucking that ass %Grin%");
             }
 
-            sendMessage("And back to fucking that ass %Grin%");
-        }
-
-        if (isChance(50) && finger && currentFingerCount < getVar(VARIABLE_ASS_LEVEL) / 6 && currentFingerCount < 5) {
-            sendMessage("I think you are ready to take more than your " + currentFingerCount++ + pluralize("finger", currentFingerCount));
-            sendMessage("Go ahead and use " + currentFingerCount + pluralize("finger", currentFingerCount) + " from now on %Grin%");
-            if (currentFingerCount >= 4) {
-                sendMessage("Better spread that asshole for me");
+            if (isChance(50) && finger && currentFingerCount < getVar(VARIABLE.ASS_LEVEL) / 6 && currentFingerCount < 5) {
+                sendMessage("I think you are ready to take more than your " + currentFingerCount++ + pluralize("finger", currentFingerCount));
+                sendMessage("Go ahead and use " + currentFingerCount + pluralize("finger", currentFingerCount) + " from now on %Grin%");
+                if (currentFingerCount >= 4) {
+                    sendMessage("Better spread that asshole for me");
+                }
             }
         }
     }
@@ -550,12 +562,12 @@ function choosePosition(toy, needsTwoHands = false) {
             break;
     }
 
-    if (!isVar(VARIABLE_LAST_DILDO_SWAP_DATE) || getDate(VARIABLE_LAST_DILDO_SWAP_DATE).addMinute(10 - Math.ceil(getVar(VARIABLE_ASS_LEVEL) / 6)).hasPassed()) {
+    if (!isVar(VARIABLE.LAST_DILDO_SWAP_DATE) || getDate(VARIABLE.LAST_DILDO_SWAP_DATE).addMinute(10 - Math.ceil(getVar(VARIABLE.ASS_LEVEL) / 6)).hasPassed()) {
         let newToy = getDildo(false).name;
 
         if (fetchDildoToy(newToy)) {
             sendMessage('I want you to use your ' + newToy + ' for now instead %Grin%');
-            setDate(VARIABLE_LAST_DILDO_SWAP_DATE);
+            setDate(VARIABLE.LAST_DILDO_SWAP_DATE);
             toy = newToy;
         } else {
             sendMessage('Let\'s continue with your ' + toy + ' then %EmoteSad%');
@@ -615,7 +627,7 @@ function startSquatAnal(toy) {
         //TODO: Could need something like this more often
         if (isChance(40)) {
             //Only send this when the sub is not in chastity
-            if (!getVar(VARIABLE_CHASTITY_ON, false)) {
+            if (!getVar(VARIABLE.CHASTITY_ON, false)) {
                 sendMessage("But no touching that %Cock%");
             } else {
                 sendMessage("Luckily I don't have to worry about your cock");
@@ -628,8 +640,7 @@ function startSquatAnal(toy) {
     sendMessage("I want you to match the upcoming beat of course");
     sendMessage("Better be " + random("ready", "prepared") + " %Grin%");
     for (let iterations = 0; iterations < 20; iterations++) {
-        //TODO: Numbers based on anal experience
-        startAnal(30, randomInteger(50, 75));
+        startAnal(Math.max(80, getInitialBPM()), randomInteger(50, 75));
 
         if (isChance(20)) {
             sendMessage("I have a fun idea %SlaveName%");

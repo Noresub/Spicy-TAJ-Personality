@@ -64,7 +64,7 @@
             const modules = [];
             const doneModules = new java.util.ArrayList();
             let currentModuleId = 0;
-            let painLevel = getVar(VARIABLE_SUB_PAIN_TOLERANCE);
+            let painLevel = getVar(VARIABLE.SUB_PAIN_TOLERANCE);
 
             let untieTeased = false;
             let untieRoundsAgo = -1;
@@ -105,14 +105,14 @@
                         }
 
                         //Tie balls up again
-                        if (!hasBallsTied() && loops != 0 && isChance(10 + painLevel * 2) && wantsToTieBalls()) {
+                        if (!hasBallsTied() && loops != 0 && isChance(10 + painLevel * 2) && wantsToTieBalls() && !isInChastity()) {
                             if(untieRoundsAgo < 0) {
                                 sendMessage('I think we need to change this up a bit');
                             } else {
                                 sendMessage(random('Let\'s make it hurt a bit more again', 'I think we should go back to tied balls %Grin%', 'I think I liked those balls more when they were tied up'));
                             }
 
-                            tieBalls();
+                            tieBalls(true);
 
                             if(untieRoundsAgo < 0) {
                                 sendMessage('Much better isn\'t it? %Grin%');
@@ -229,7 +229,7 @@
                 */
             }
 
-            sendMessage('I guess we are done with %MyBalls% %Balls% for now');
+            sendMessage('I guess ' + random('we are', 'I am') + ' done with %MyBalls% %Balls% for now');
             sendMessage('But that doesn\'t means I won\'t touch them for today anymore %Grin%')
         }
     }
@@ -248,7 +248,7 @@ function getBallHitLevelIndex(loop, maxLoops, painToleranceLevel, isBeginning) {
 function getToiletLidTask(hitLevel, hasPortableDevice, map) {
     const hitLevels = ['low height', 'medium height', 'full height'];
 
-    const painTolerance = getVar(VARIABLE_SUB_PAIN_TOLERANCE);
+    const painTolerance = getVar(VARIABLE.SUB_PAIN_TOLERANCE);
     const randomModifier = Math.max(0, (hitLevel + 1) * 4 - painTolerance);
 
     let hitAmount = randomInteger(Math.max(1, 3 - randomModifier), Math.max(1, 5 - randomModifier));
@@ -281,7 +281,7 @@ function sendBallHitTask(hitLevel, hitType, loops, isBeginning, map) {
     const hitLevels = ['light', 'medium', 'hard'];
     const hitTypes = ['flick', 'slap', 'punch'];
 
-    const painTolerance = getVar(VARIABLE_SUB_PAIN_TOLERANCE);
+    const painTolerance = getVar(VARIABLE.SUB_PAIN_TOLERANCE);
     const randomModifier = (hitLevel + 1) * 5 + hitType - painTolerance;
 
     let hitAmount = randomInteger(Math.max(1, 10 - randomModifier), Math.max(1, 12 - randomModifier));

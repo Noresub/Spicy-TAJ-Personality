@@ -21,18 +21,18 @@
                 sendMessage("Use your vibrator or whatever you want to");
                 sendMessage("Just don\'t remove that %ChastityCage%");
 
-                if(isVar(VARIABLE_TRAINING_ORGASM_TODAY)) {
+                if(isVar(VARIABLE.TRAINING_ORGASM_TODAY)) {
                     sendMessage('I know I am already allowing you an orgasm for another training today');
                     sendMessage('Which means you are free to schedule this orgasm on top of the other one anywhere in the next 48 hours');
                 } else {
-                    setTempVar(VARIABLE_TRAINING_ORGASM_TODAY, true);
+                    setTempVar(VARIABLE.TRAINING_ORGASM_TODAY, true);
                 }
 
                 sendMessage("Enjoy %Lol%");
 
                 registerOrgasm();
                 delVar("AnalExamStartDate");
-                setVar(VARIABLE_ASS_TRAINING, false);
+                setVar(VARIABLE.ASS_TRAINING, false);
             } else {
                 sendMessage("Awww that's too bad %EmoteSad%");
                 sendMessage("That disappoints me %SlaveName%");
@@ -54,12 +54,11 @@ function startAnalExam() {
     setDate('AnalExamStartDate');
     sendMessage("Your anal exam starts now");
 
-    //TODO: Select buttplug out of collection
-    sendMessage("You are to wear your small butt plug for 7 days in a row!");
-    sendMessage("Your only time when you can remove it is to clean yourself and...");
+    sendMessage('You are to wear your ' + getButtplugForTask().name + ' for 7 days in a row!');
+    sendMessage("Your only time when you can remove it is to clean yourself or need to take a shit and...");
     sendMessage("Of course if I want to violate your ass in a different way %Lol%");
 
-    if(getASMLimit() ==LIMIT_ASKED_YES) {
+    if(getASMLimit() === LIMIT_ASKED_YES) {
         sendMessage(random("Remember ", "Don\'t forget ", "Keep in mind ") + "to properly lick your toys clean each day %SlaveName% %Lol% ");
     }
 }

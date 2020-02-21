@@ -10,6 +10,7 @@ run("Utils/ArrayUtils.js");
 run("Chat/ChatUtil.js");
 run("Slaves/Slaves.js");
 run("Session/Orgasm/Orgasm.js");
+run("Session/Orgasm/OrgasmSpecial.js");
 
 run("Session/End/Training.js");
 
@@ -20,9 +21,11 @@ sendSystemMessage("Launching Spicy " + getVar("personalityVersion"));
 run("Utils/RandomUtils.js");
 run("Utils/StringUtils.js");
 run("Utils/BodyParts.js");
-run("Utils/GoldUtils.js")
-run("Utils/TAJUtils.js")
-run("Utils/LegacyUtils.js")
+run("Utils/GoldUtils.js");
+run("Utils/TAJUtils.js");
+run("Utils/TimeUtils.js");
+run("Utils/LegacyUtils.js");
+
 run("Session/Tasks.js");
 run("Startup/UpdateVariables.js");
 run("Stroking/Stroke.js");
@@ -67,12 +70,19 @@ run("Rules/DynamicRules.js");
 
 run("Session/Modules/Games/Games.js");
 
+
 //Shop
 run("Shop/ShopItems.js");
 
+run("Dungeon/Punishments/PunishmentBuilder.js");
+
+run("Startup/Versioning/VersionChecker.js");
+
+afterLoadBodyParts();
+
 
 //Update devotion only if the setup is complete which means the variable must exist
-if(isVar("subDevotion")) {
+if(isVar(VARIABLE.DEVOTION)) {
     run("Settings/UpdateDevotion.js");
 }
 
@@ -84,14 +94,13 @@ if(endMillis - startMillis < waitTime) {
     sleep(Math.floor(waitTime - (endMillis - startMillis)), 'MILLISECONDS');
 }
 
-setTempVar(VARIABLE_CURRENT_SESSION_ACTIVE, false);
+setTempVar(VARIABLE.CURRENT_SESSION_ACTIVE, false);
 
 //Real interaction starts here!
 
-if(!getVar(VARIABLE_FINISHED_SETUP, false)) run("Startup/Setup.js");
+if(!getVar(VARIABLE.FINISHED_SETUP, false)) run("Startup/Setup.js");
 
-if(!getVar(VARIABLE_FINISHED_FIRST_SESSION, false)) run("Session/FirstSession.js");
-
+if(!getVar(VARIABLE.FINISHED_FIRST_SESSION, false)) run("Session/FirstSession.js");
 
 
 //TODO: Academy

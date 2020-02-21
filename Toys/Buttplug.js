@@ -15,7 +15,6 @@ let currentPlug = null;
 
 const BUTTPLUG_TOY = createToy('buttplugs');
 
-
 function updateSessionButtplugs() {
     for (let x = 0; x < buttplugs.length; x++) {
         buttplugs[x].usedInSession = false;
@@ -23,6 +22,8 @@ function updateSessionButtplugs() {
     }
 }
 
+
+//TODO: With ASM enabled this will only work very rarely because most of the time we have cleaned the plug afterwards
 function getRandomUncleanedButtplug() {
     for (let x = 0; x < buttplugs.length; x++) {
         if (buttplugs[x].usedInSession && !buttplugs[x].clean && currentPlug !== buttplugs[x]) {
@@ -43,22 +44,34 @@ function getRandomCleanButtplug() {
     return null;
 }
 
+function getButtplugClosestBelow(diameter) {
+    let currentPlug = null;
+    for (let x = 0; x < buttplugs.length; x++) {
+        //We must be <= the given diameter and bigger than the current diameter
+        if (buttplugs[x].diameter <= diameter && (currentPlug === null || buttplugs[x].diameter > currentPlug.diameter)) {
+            currentPlug = buttplugs[x];
+        }
+    }
+
+    return currentPlug;
+}
+
 function hasButtplugToy() {
-    return BUTTPLUG_TOY.hasToy();
+    return buttplugs.length > 0;
 }
 
 function isPlugged() {
-    return getVar(VARIABLE_IS_PLUGGED, false);
+    return getVar(VARIABLE.IS_PLUGGED, false);
 }
 
 function shouldIncreasePlugSize() {
     let minTime = 7;
     let maxTime = 10;
 
-    if (getVar(VARIABLE_ASS_LEVEL, 0) >= 20) {
+    if (getVar(VARIABLE.ASS_LEVEL, 0) >= 20) {
         minTime = 6;
         maxTime = 8;
-    } else if (getVar(VARIABLE_ASS_LEVEL, 0) >= 30) {
+    } else if (getVar(VARIABLE.ASS_LEVEL, 0) >= 30) {
         minTime = 5;
         maxTime = 7;
     }
@@ -68,7 +81,7 @@ function shouldIncreasePlugSize() {
             if (BUTTPLUG_TOY.getLastUsage().addMinute(randomInteger(minTime, maxTime)).hasPassed()) {
                 return ACTION_BUTTPLUG_INCREASE_SIZE;
             }
-        } else if (BUTTPLUG_TOY.getLastUsage().addMinute(randomInteger(minTime, maxTime)).hasPassed()) {
+        } else if (BUTTPLUG_TOY.wasUsedInActiveContext() && BUTTPLUG_TOY.getLastUsage().addMinute(randomInteger(minTime, maxTime)).hasPassed()) {
             return ACTION_BUTTPLUG_INCREASE_SIZE;
         } else {
             return ACTION_BUTTPLUG_PUT_FIRST;
@@ -78,14 +91,22 @@ function shouldIncreasePlugSize() {
     return ACTION_BUTTPLUG_WAIT_FOR_TIME;
 }
 
+function isUnexperiencedDiamater(diameter) {
+    return diameter >= 2.8;
+}
+
+function isVeryUnexperiencedDiamater(diameter) {
+    return diameter >= 3.5;
+}
+
 /*function tryIncreasePlugSize() {
     if(currentPlug !== biggestButtplug) {
         if(isPlugged()) {
-            if (isVar(VARIABLE_LAST_PLUG_DATE) && getVar(VARIABLE_LAST_PLUG_DATE).addMinute(randomInteger(7, 10)).hasPassed()) {
+            if (isVar(VARIABLE.LAST_PLUG_DATE) && getVar(VARIABLE.LAST_PLUG_DATE).addMinute(randomInteger(7, 10)).hasPassed()) {
                 increasePlugSize();
             }
-        } else if (isVar(VARIABLE_LAST_PLUG_DATE)) {
-            if(getVar(VARIABLE_LAST_PLUG_DATE).addMinute(randomInteger(7, 10)).hasPassed()) {
+        } else if (isVar(VARIABLE.LAST_PLUG_DATE)) {
+            if(getVar(VARIABLE.LAST_PLUG_DATE).addMinute(randomInteger(7, 10)).hasPassed()) {
                 putInButtplug();
             }
         } else {
@@ -97,9 +118,9 @@ function shouldIncreasePlugSize() {
 function increasePlugSize() {
     if (isPlugged()) {
         removeButtplug();
+        sendMessage(random('Let\'s widen that ass even more', 'Your ass won\'t be empty for long', 'Let\'s increase the size of your plug', 'We just removed that plug to make room for the next bigger one') + ' %Grin%');
     }
 
-    sendMessage(random('Let\'s widen that ass even more', 'Your ass won\'t be empty for long', 'Let\'s increase the size of your plug', 'We just removed that plug to make room for the next bigger one') + ' %Grin%');
     return putInButtplug(true);
 }
 
@@ -116,13 +137,13 @@ function putInButtplug(forceBigger = false) {
         removeButtplug();
     }
 
-    if (feelsEvil() && isChance(50) && getVar(VARIABLE_ASS_LEVEL) > 15) {
-        if (!isVar(VARIABLE_LAST_ICE_CUBE_UP_ASS_DATE) || getDate(VARIABLE_LAST_ICE_CUBE_UP_ASS_DATE).addMinute(10).hasPassed()) {
+    if (feelsEvil() && isChance(50) && getVar(VARIABLE.ASS_LEVEL) > 15) {
+        if (!isVar(VARIABLE.LAST_ICE_CUBE_UP_ASS_DATE) || getDate(VARIABLE.LAST_ICE_CUBE_UP_ASS_DATE).addMinute(10).hasPassed()) {
             sendMessage('But before we are gonna stick that buttplug up your %Ass%');
 
             let iceCubes = randomInteger(2, 5);
             if (fetchIceCubes(iceCubes)) {
-                if (isVar(VARIABLE_LAST_ICE_CUBE_UP_ASS_DATE)) {
+                if (isVar(VARIABLE.LAST_ICE_CUBE_UP_ASS_DATE)) {
                     sendMessage('Yet again %Grin%');
                     sendMessage('Push them up your ass one by one %Grin%');
                     sendMessage('And make sure that nothing sips out when you push the new ones in');
@@ -144,7 +165,7 @@ function putInButtplug(forceBigger = false) {
                 sendMessage('Tell me when you are done...');
                 waitForDone();
                 sendMessage('How is it feeling? Cold? %Grin%');
-                setTempVar(VARIABLE_LAST_ICE_CUBE_UP_ASS_DATE, setDate());
+                setTempVar(VARIABLE.LAST_ICE_CUBE_UP_ASS_DATE, setDate());
             }
         }
     }
@@ -165,11 +186,11 @@ function putInButtplug(forceBigger = false) {
 
     sendMessage("Now %SlaveName%");
 
-    if (isChance(getStrictnessForCharacter() * 10) && getVar(VARIABLE_ASS_LEVEL) >= 30) {
+    if (isChance(getStrictnessForCharacter() * 10) && getVar(VARIABLE.ASS_LEVEL) >= 30) {
         sendMessage("Push it in quickly");
         sendMessage("I don't care whether it hurts");
     } else {
-        if (isChance(50) && getVar(VARIABLE_ASS_LEVEL) >= 30) {
+        if (isChance(50) && getVar(VARIABLE.ASS_LEVEL) >= 30) {
             sendMessage("Put that plug on the ground");
             sendMessage("You already know " + random("what I am gonna make you do now", "what comes next", "what you are gonna do next", "what I want you to do next", "what is gonna happen now"));
             sendMessage("I want you to slowly sit down on that plug and push it all the way up your ass");
@@ -187,7 +208,7 @@ function putInButtplug(forceBigger = false) {
             sendMessage("Carefully start pushing that plug into your ass");
             sendMessage("Push it slowly and gently...");
 
-            if (!isVar("pluggedToday") && getVar(VARIABLE_ASS_LEVEL) < 30) {
+            if (isUnexperiencedDiamater(plug.diameter) && getVar(VARIABLE.ASS_LEVEL) < 30 || isVeryUnexperiencedDiamater(plug.diameter)) {
                 sendMessage("Until you reach the point where it starts hurting a bit");
                 sendMessage("Now hold that position", 3);
                 sendMessage("Let that plug slip out again");
@@ -197,10 +218,14 @@ function putInButtplug(forceBigger = false) {
                 sendMessage("Push it a bit further this time");
                 sendMessage("Hold the position again", 3);
                 sendMessage("Aaaaand...");
-                sendMessage("Let that plug slip out again");
-                sendMessage("Now...");
-                sendMessage("This time it is gonna go all the way in %Grin%");
-                sendMessage("Starting pushing it in");
+
+                if(isVeryUnexperiencedDiamater(plug.diameter)) {
+                    sendMessage("Let that plug slip out again");
+                    sendMessage("Now...");
+                    sendMessage("This time it is gonna go all the way in %Grin%");
+                    sendMessage("Starting pushing it in");
+                }
+
                 sendMessage("Get it all the way in there");
             } else {
                 sendMessage("Push it all the way in...");
@@ -224,8 +249,8 @@ function putInButtplug(forceBigger = false) {
         sendMessage(random('You paid for it so we better make use of that now %EmoteHappy%', 'No reason to leave that feature unused is there? %EmoteHappy%', 'Let\'s see if I can drive you crazy like this %GeneralTime%'));
     }
 
-    setTempVar("pluggedToday", true);
-    setTempVar(VARIABLE_IS_PLUGGED, true);
+    BUTTPLUG_TOY.setUsedInActiveContext(true);
+    setTempVar(VARIABLE.IS_PLUGGED, true);
     BUTTPLUG_TOY.setLastUsage();
 
     //Plug was used and is no longer clean
@@ -237,97 +262,22 @@ function putInButtplug(forceBigger = false) {
     return true;
 }
 
-function getAssLubeType(mood, level = getVar(VARIABLE_ASS_LEVEL)) {
-    if (level < 30) {
-        return ANY_LUBE;
-    }
-
-    const lubeTypes = [];
-
-    if (mood === VERY_PLEASED_MOOD) {
-        if (isChance(getStrictnessForCharacter() * 10)) {
-            lubeTypes.push(SPIT_LUBE);
-        } else {
-            lubeTypes.push(ANY_LUBE);
-        }
-    } else if (mood === PLEASED_MOOD) {
-        if (isChance(getStrictnessForCharacter() * 20)) {
-            lubeTypes.push(SPIT_LUBE);
-        } else {
-            lubeTypes.push(ANY_LUBE);
-        }
-    } else if (mood === NEUTRAL_MOOD) {
-        if (isChance(getStrictnessForCharacter() * 25)) {
-            if (getStrictnessForCharacter() > 0) {
-                if (hasToothpaste()) {
-                    lubeTypes.push(TOOTHPASE_LUBE);
-                }
-
-                lubeTypes.push(NO_LUBE);
-            } else {
-                lubeTypes.push(SPIT_LUBE);
-            }
-        } else {
-            lubeTypes.push(ANY_LUBE);
-        }
-    } else if (mood === ANNOYED_MOOD) {
-        if (isChance((getStrictnessForCharacter() + 1) * 20)) {
-            if (getStrictnessForCharacter() > 0) {
-                lubeTypes.push(NO_LUBE);
-
-                if (hasTigerHot()) {
-                    lubeTypes.push(TIGER_HOT_LUBE);
-                }
-            }
-
-            if (hasToothpaste()) {
-                lubeTypes.push(TOOTHPASE_LUBE);
-            }
-
-            lubeTypes.push(SPIT_LUBE);
-        } else {
-            lubeTypes.push(ANY_LUBE);
-        }
-    } else if (mood === VERY_ANNOYED_MOOD) {
-        if (isChance((getStrictnessForCharacter() + 1) * 25)) {
-            if (getStrictnessForCharacter() > 0) {
-                if (hasTigerHot()) {
-                    lubeTypes.push(TIGER_HOT_LUBE);
-                }
-            }
-
-            lubeTypes.push(NO_LUBE);
-
-            if (hasToothpaste()) {
-                lubeTypes.push(TOOTHPASE_LUBE);
-            }
-
-            lubeTypes.push(SPIT_LUBE);
-        } else {
-            lubeTypes.push(ANY_LUBE);
-        }
-    }
-
-    if (lubeTypes.length === 0) return ANY_LUBE;
-    return lubeTypes[randomInteger(0, lubeTypes.length - 1)];
+function getButtplugForTask() {
+    return getButtplugClosestBelow(getMaxStartingDiameter());
 }
 
-function getButtplugSize() {
-    let assLevel = getVar(VARIABLE_ASS_LEVEL);
+function getMaxStartingDiameter() {
+    let diameter = smallestButtplug.diameter;
 
-    if (assLevel < 15) {
-        return "small";
-    } else if (assLevel < 30) {
-        return random("small", "medium");
-    } else {
-        return random("medium", "big");
-    }
+    let assLevel = getVar(VARIABLE.ASS_LEVEL);
+
+    return Math.max(diameter, assLevel/7.5);
 }
 
 function getMaxDiameterIncrease() {
     let maxDiameterIncrease = 1;
 
-    let assLevel = getVar(VARIABLE_ASS_LEVEL);
+    let assLevel = getVar(VARIABLE.ASS_LEVEL);
 
     if (assLevel >= 30) {
         maxDiameterIncrease = 0.75;
@@ -344,7 +294,7 @@ function getMaxDiameterIncrease() {
 function getAnalPlug(minLength = 0, minThickness = 0, forceBigger = true) {
     //Get the max used thickness today to make sure we don't go too big too quickly
     //In the rare case of the biggest dildo being thicker than our biggest plug we need to watch for that
-    let maxUsedPlugThickness = Math.min(biggestButtplug.diameter, getVar(VARIABLE_MAX_DILDO_THICKNESS_TODAY, 0));
+    let maxUsedPlugThickness = Math.min(biggestButtplug.diameter, getVar(VARIABLE.MAX_DILDO_THICKNESS_TODAY, 0));
 
     //If we want to force bigger and haven't been given a min thickness then we will make it bigger than the biggest thing we used today to make sure we go up
     if (forceBigger && minThickness === 0) {
@@ -361,7 +311,7 @@ function getAnalPlug(minLength = 0, minThickness = 0, forceBigger = true) {
     //TODO: Handle min length too (smallest plug etc.)
 
     //Should be smallest buttplug size or if for example ass level 30 at least 3.5 (allows progression to go faster at start of session)
-    let allowedDefaultMaxDiameter = Math.max(smallestButtplug.diameter, Math.ceil(getVar(VARIABLE_ASS_LEVEL, 0) / 10) + 0.5);
+    let allowedDefaultMaxDiameter = Math.max(smallestButtplug.diameter, Math.ceil(getVar(VARIABLE.ASS_LEVEL, 0) / 10) + 0.5);
 
     while (availablePlugs.length === 0 && buttplugs.length !== 0) {
         for (let y = 0; y < buttplugs.length; y++) {
@@ -391,12 +341,12 @@ function getAnalPlug(minLength = 0, minThickness = 0, forceBigger = true) {
 
     let plug = availablePlugs[randomInteger(0, availablePlugs.length - 1)];
 
-    setTempVar(VARIABLE_MAX_DILDO_THICKNESS_TODAY, Math.max(getVar(VARIABLE_MAX_DILDO_THICKNESS_TODAY, 0), plug.diameter));
+    setTempVar(VARIABLE.MAX_DILDO_THICKNESS_TODAY, Math.max(getVar(VARIABLE.MAX_DILDO_THICKNESS_TODAY, 0), plug.diameter));
 
     return plug;
 }
 
-function removeButtplug() {
+function removeButtplug(end = false) {
     if (!isPlugged()) {
         return;
     }
@@ -411,7 +361,12 @@ function removeButtplug() {
             sendMessage("Do it as fast as possible! %Grin%");
         }
 
-        sendMessage("I know it might " + random("be painful", "hurt", "be unpleasant"));
+        if(isVeryUnexperiencedDiamater(currentPlug.diameter)) {
+            sendMessage("I know it might " + random("be painful", "hurt", "be unpleasant"));
+        } else {
+            sendMessage("I know it might " + random("be difficult", "be complicated", "be unpleasant"));
+        }
+
         continueHurtResponse();
 
         let answer = sendInput("Tell me when you are done %SlaveName%");
@@ -468,7 +423,7 @@ function removeButtplug() {
         } else {
             sendMessage("Pull it out");
 
-            if (getStrictnessForCharacter() == 0 || isChance(100 - getStrictnessForCharacter() * 30)) {
+            if (getStrictnessForCharacter() === 0 || isChance(100 - getStrictnessForCharacter() * 30)) {
                 sendMessage("Slowly...");
             } else {
                 sendMessage("Do it as fast as possible! %Grin%");
@@ -488,60 +443,21 @@ function removeButtplug() {
     }
 
     if (getASMLimit() === LIMIT_ASKED_YES) {
-        sendMessage("You already know " + random("what I am gonna make you do now", "what comes next", "what you are gonna do next", "what I want you to do next", "what is gonna happen now"));
-        sendMessage("I want you to suck that toy clean %Grin%");
+        let choice = randomInteger(ASM_CLEAN_TYPE_GAG, ASM_CLEAN_TYPE_LICK);
 
-        if (isGaged()) {
-            removeGag();
+        //No buttplug gag at the end because it's useless
+        if(end) {
+            choice = randomInteger(ASM_CLEAN_TYPE_BLOW, ASM_CLEAN_TYPE_LICK);
         }
 
-        //Gag
-        if (isChance(20)) {
-            sendMessage("However today we are " + random("gonna clean it differently", "handle this a bit differently", "not gonna just lick it clean"));
-            sendMessage("In a moment you'll going to put that plug all the way into your mouth");
-            sendMessage("And you are gonna keep it there %Grin%");
-
-            if (isGaged()) {
-                removeGag();
-            }
-
-            sendMessage("Go ahead and put that plug into your mouth");
-            sleep(5);
-
-            sendMessage("Look at you...");
-            sendMessage("Pathetic as you are");
-            sendMessage(random("Can you taste your own ass juice? %Lol%", "Your mouth filled with a plug that has been in your ass for quite some time"));
-            sendMessage("And all of that just to " + random("please me", "make me happy", "entertain me") + " %EmoteHappy%");
-
-            setGaged(true);
-            currentGagType = GAG_TYPE_BUTTPLUG_GAG;
-            currentGagType.setLastUsage();
-
-            if (feelsLikePunishingSlave()) {
-                goToCorner(getCornerTime());
-            }
-        } else {
-            sendMessage(random("I want you to blow it like you would blow a dildo", "I want you to lick it from the top to the bottom"));
-            sendMessage("Our toy should be shining and spotless");
-            sendMessage("Keep going until I tell you to stop");
-
-
-            sendMessage("Look at you...");
-            sendMessage("Pathetic as you are");
-            sendMessage(random("Can you taste your own ass juice?", "Licking of your own ass juice", "Licking that plug that was in your ass not too long ago") + " %Lol%");
-            sendMessage("And all of that just to " + random("please me", "make me happy", "entertain me") + " %EmoteHappy%");
-
-            sleep(randomInteger(10, 20));
-
-            sendMessage("You can stop now %EmoteHappy%");
-            sendMessage("Put the plug aside");
+        if(doButtplugASMClean(choice)) {
+            //Plug was cleaned
+            currentPlug.clean = true;
         }
-
-        currentPlug.clean = true;
     }
 
     currentPlug = null;
-    setTempVar(VARIABLE_IS_PLUGGED, false);
+    setTempVar(VARIABLE.IS_PLUGGED, false);
 }
 
 function endLastPlugPull() {
@@ -574,7 +490,8 @@ function loadButtplugs() {
             let hollow = false;
             let tail = false;
             let crystal = false;
-            let material = MATERIAL_SILICON;
+            let material = MATERIAL.SILICON;
+            let tbase = false;
 
             for (let y = 0; y < splitArray.length; y++) {
                 let valueEntry = splitArray[y];
@@ -597,6 +514,8 @@ function loadButtplugs() {
                     crystal = valueEntry.substr(valueEntry.indexOf(':') + 1, valueEntry.length);
                 } else if (valueEntry.indexOf('material:') !== -1) {
                     material = valueEntry.substr(valueEntry.indexOf(':') + 1, valueEntry.length);
+                } else if (valueEntry.indexOf('tbase:') !== -1) {
+                    tbase = valueEntry.substr(valueEntry.indexOf(':') + 1, valueEntry.length);
                 }
             }
 
@@ -609,7 +528,8 @@ function loadButtplugs() {
                 material: material,
                 hollow: hollow,
                 tail: tail,
-                crystal: crystal
+                crystal: crystal,
+                tbase: tbase
             };
             buttplugs.push(buttplug);
 
@@ -648,6 +568,10 @@ function buttplugToString(buttplug) {
 
     if (buttplug.crystal) {
         string += ',crystal:' + buttplug.crystal;
+    }
+
+    if (buttplug.tbase) {
+        string += ',tbase:' + buttplug.tbase;
     }
 
     return string;
@@ -759,7 +683,7 @@ function setupNewButtplug() {
         }
     }
 
-    let material = MATERIAL_SILICON;
+    let material = MATERIAL.SILICON;
 
     sendVirtualAssistantMessage('Great. Now...');
     sendVirtualAssistantMessage('Is it made out of metal, glass or silicon?', 0);
@@ -767,13 +691,13 @@ function setupNewButtplug() {
 
     while (true) {
         if (answer.isLike("metal")) {
-            material = MATERIAL_METAL;
+            material = MATERIAL.METAL;
             break;
         } else if (answer.isLike("glass")) {
-            material = MATERIAL_GLASS;
+            material = MATERIAL.GLASS;
             break;
         } else if (answer.isLike("silicon")) {
-            material = MATERIAL_SILICON;
+            material = MATERIAL.SILICON;
             break;
         } else {
             sendVirtualAssistantMessage('Is it made out of glass, metal or silicon?');
@@ -788,8 +712,9 @@ function setupNewButtplug() {
     let tail = false;
     let crystal = false;
     let hollow = false;
+    let tbase = false;
 
-    sendVirtualAssistantMessage('Is there anything else special about it? (Textured, Tail, Hollow, Vibrating, Crystal)', 0);
+    sendVirtualAssistantMessage('Is there anything else special about it? (Textured, Tail, Hollow, Vibrating, Crystal, T-Base)', 0);
     answer = createInput();
 
     while (true) {
@@ -877,6 +802,22 @@ function setupNewButtplug() {
                 }
             }
 
+            sendVirtualAssistantMessage('Does it have a "T" based base instead of a round one?', 0);
+            answer = createInput();
+
+            while (true) {
+                if (answer.isLike("yes")) {
+                    tbase = true;
+                    sendVirtualAssistantMessage('This is great for long term wearing %Grin%');
+                    break;
+                } else if (answer.isLike("no")) {
+                    break;
+                } else {
+                    sendVirtualAssistantMessage(YES_OR_NO);
+                    answer.loop();
+                }
+            }
+
             sendVirtualAssistantMessage('Finishing setup...');
             break;
         } else if (answer.isLike("no")) {
@@ -899,7 +840,8 @@ function setupNewButtplug() {
         material: material,
         hollow: hollow,
         tail: tail,
-        crystal: crystal
+        crystal: crystal,
+        tbase: tbase
     };
 
     buttplugs.push(buttplug);

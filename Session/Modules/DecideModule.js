@@ -1,15 +1,15 @@
-//TODO: Pain Modules: Sounding, Electric Kit
+//TODO: Pain Modules: Sounding
 
 {
     //End session
-    while (!getDate(VARIABLE_CURRENT_SESSION_DATE).clone().addMinute(getVar(VARIABLE_DEVOTION)).hasPassed()) {
+    while (!getDate(VARIABLE.CURRENT_SESSION_DATE).clone().addMinute(getVar(VARIABLE.DEVOTION) + getVar(VARIABLE.PROLONGED_SESSION_TIME, 0)).hasPassed()) {
 
         //Apply random toys
         interactWithRandomToys();
 
         //TODO: punishment distraction
 
-        let strokeFrequency = getVar(VARIABLE_STROKE_MODULE_PAUSE_FREQUENCY, 0);
+        let strokeFrequency = getVar(VARIABLE.STROKE_MODULE_PAUSE_FREQUENCY, 0);
 
         let minTimePassed = 0;
 
@@ -18,13 +18,13 @@
             const mood = getMood();
             const strictness = getStrictnessForCharacter();
 
-            minTimePassed = getVar(VARIABLE_DEVOTION)/Math.min(4, Math.max(1, 5 - strictness - mood - 1));
+            minTimePassed = getVar(VARIABLE.DEVOTION)/Math.min(4, Math.max(1, 5 - strictness - mood - 1));
         } else {
             //Other frequency
-            getVar(VARIABLE_DEVOTION)/(strokeFrequency + 1);
+            getVar(VARIABLE.DEVOTION)/(strokeFrequency + 1);
         }
 
-        sendDebugMessage('Min time passed: ' + minTimePassed);
+        sendDebugMessage('Min time between stroking passed: ' + minTimePassed);
 
         //Some stroking sometimes
         if((!isVar('lastStrokingPause') || getVar('lastStrokingPause').addMinute(minTimePassed).hasPassed())) {
@@ -33,7 +33,7 @@
                 let strictness = getStrictnessForCharacter() + 1;
                 let minutesToStroke = Math.round((180 - mood*mood*strictness)/60);
 
-                sendDebugMessage('Start of stroking interval');
+                sendDebugMessage('Start of stroking interval for ' + minutesToStroke);
 
                 startStrokeInterval(randomInteger(Math.max(1, minutesToStroke - 1), minutesToStroke));
 
@@ -42,10 +42,11 @@
                 let mood = getMood() + 1;
                 let strictness = getStrictnessForCharacter() + 1;
                 let iterationsToTease = 26 - mood*strictness*2;
+                let actualLoop = randomInteger(Math.round(iterationsToTease/2), iterationsToTease);
 
-                sendDebugMessage('Start of teasing interval');
+                sendDebugMessage('Start of teasing interval for ' + iterationsToTease + ' iterations');
 
-                for (let x = 0; x < randomInteger(Math.round(iterationsToTease/2), iterationsToTease); x++) {
+                for (let x = 0; x < actualLoop; x++) {
                     run("Stroking/Taunt/Chastity/BasicChastityTaunts.js");
                     sleep(5);
                 }
@@ -99,11 +100,11 @@
         //Now apply the changes
         teaseModuleChance += teaseModuleAdditions[index];
 
-        if (getVar(VARIABLE_PUNISHMENT_POINTS) >= 250) {
+        if (getVar(VARIABLE.PUNISHMENT_POINTS) >= 250) {
             teaseModuleChance -= 10;
         }
 
-        if (getVar(VARIABLE_ANGER) > 25) {
+        if (getVar(VARIABLE.ANGER) > 25) {
             teaseModuleChance -= 10;
         }
 
@@ -114,7 +115,8 @@
         //Not used atm.
         let sissyModuleChance = 0;
 
-        let painModuleChance = moduleChance;
+        //No pain modules if pain is hard limit
+        let painModuleChance = PAIN_LIMIT.isHardLimit()? moduleChance : 0;
         let slaveModuleChance = moduleChance;
         let humiliationModuleChance = moduleChance;
 
@@ -143,8 +145,26 @@
             runModuleCategory(CATEGORY_HUMILATION);
         }
 
-        sendDebugMessage('Running link');
+        sendDebugMessage('Trying to run link');
         run("Session/Link/Module/DecideLink.js");
+    }
+
+    //Maybe prolong session if we haven't already
+    if(wouldLikeToProlongSession() && !isVar(VARIABLE.PROLONGED_SESSION_TIME)) {
+        //QUALITY: More diverse chat
+        sendMessage('Looks like our time is up %SlaveName% %EmoteSad%');
+        sendMessage('I am feeling like still playing for a bit though %Grin%');
+        if(sendYesOrNoQuestion('Would you be up for a longer session today?')) {
+            sendMessage('%Good%');
+            changeMeritLow(false);
+            //Add another 10 to 20 minutes
+            setTempVar(VARIABLE.PROLONGED_SESSION_TIME, randomInteger(10, 20));
+            run("Session/Modules/DecideModule.js");
+        } else {
+            sendMessage('I can understand that you might have something to attend to');
+            changeMeritMedium(true);
+            sendMessage('It\'s okay for me');
+        }
     }
 
     run('Session/End/DecideEnd.js')
@@ -152,6 +172,18 @@
 
 function runModuleCategory(category) {
     setTempVar('lastModuleCategory', category);
+
+    //Infinite loop?
+    if(getVar('findModuleTries', 0) > 20) {
+        if(category !== CATEGORY_TEASE) {
+            sendDebugMessage('Stuck in module ' + category + ' loop . Trying tease now');
+            category = CATEGORY_TEASE;
+        } else {
+            sendDebugMessage('Stuck in module ' + category + ' loop . Trying slave now');
+            category = CATEGORY_SLAVE;
+        }
+    }
+
     const neutralPath = getModuleTypeCategoryPath(category, 'Neutral');
     const noChastityPath = getModuleTypeCategoryPath(category, 'NoChastity');
     const dynamicPath = getModuleTypeCategoryPath(category, 'Dynamic');
@@ -170,7 +202,7 @@ function runModuleCategory(category) {
         paths.push(dynamicPath + PATH_SEPARATOR + "*.js");
     }
 
-    //Keep track of how many times we tried to find a module in a category since last decide Moudle call
+    //Keep track of how many times we tried to find a module in a category since last decide Module call
     setTempVar('findModuleTries', getVar('findModuleTries', 0) + 1);
 
     run(paths[randomInteger(0, paths.length - 1)]);

@@ -42,7 +42,33 @@ function feelsLikePunishingSlave() {
         chance = (getStrictnessForCharacter() + 1) * 30;
     }
 
-    return getVar(VARIABLE_PUNISHMENT_POINTS) >= 250 || isChance(chance);
+    if(getVar(VARIABLE.PUNISHMENT_POINTS) >= 250) {
+        chance += 50;
+    }
+
+    return isChance(chance);
+}
+
+function wouldLikeToProlongSession() {
+    let mood = getMood();
+
+    if(mood > 1) {
+        sendDebugMessage('No prolonged session because mood neutral or worse');
+        return false;
+    } else {
+        let chance = (3 - mood)*10;
+        let daysPassed = 7;
+
+        if(isVar(VARIABLE.LAST_PROLONGED_SESSION)) {
+            daysPassed = millisToTimeUnit(getMillisSinecDate(getDate(VARIABLE.LAST_PROLONGED_SESSION)), TIME_UNIT_DAYS, 0);
+            sendDebugMessage('Last prolonged session was ' + daysPassed + ' days ago');
+        }
+
+        chance += daysPassed*7;
+        sendDebugMessage('Checking for prolonged session with chance ' + chance);
+
+        return isChance(chance);
+    }
 }
 
 //Annoyed by too many questions  etc.
@@ -52,11 +78,21 @@ function isAnnoyedByTalking() {
     let chance = 0;
 
     //Talking issues
-    chance += getVar(VARIABLE_FORGETTING_HONORIFIC_COUNT, 0)*10*mood;
-    chance += getVar(VARIABLE_UNALLOWED_TALKS, 0)*10*mood;
-    chance += getVar(VARIABLE_COMPLAINTS, 0)*10*mood;
+    chance += getVar(VARIABLE.FORGETTING_HONORIFIC_COUNT, 0)*10*mood;
+    chance += getVar(VARIABLE.UNALLOWED_TALKS, 0)*10*mood;
+    chance += getVar(VARIABLE.COMPLAINTS, 0)*10*mood;
 
-    return isChance(Math.min(100, chance));
+    //General mood
+    if(chance > 0) {
+        //Mood already applied
+        chance += mood*5;
+    } else {
+        //Mood had no effect yet
+        chance += mood*10;
+    }
+
+    sendDebugMessage('Annoyed by talking chance: ' + chance);
+    return isChance(chance);
 }
 
 //Meant in a playful but evil kind of way (not really pain or anything)
@@ -107,7 +143,7 @@ function getCruelTeasingMood() {
         multiplier = 1.5;
     }
 
-    return (getVar(VARIABLE_ANGER) + getVar(VARIABLE_LUST, 0))*multiplier - getVar(VARIABLE_HAPPINESS, 0);
+    return (getVar(VARIABLE.ANGER) + getVar(VARIABLE.LUST, 0))*multiplier - getVar(VARIABLE.HAPPINESS, 0);
 }
 
 function getHumiliationMood() {
@@ -120,38 +156,38 @@ function getHumilationTimeModifier() {
 
 //TODO: Add to it hurts etc.
 function registerComplain() {
-    if(getVar(VARIABLE_COMPLAINTS, 0) > 3) {
+    if(getVar(VARIABLE.COMPLAINTS, 0) > 3) {
         changeMeritHigh(true);
-    } else if(getVar(VARIABLE_COMPLAINTS) > 1) {
+    } else if(getVar(VARIABLE.COMPLAINTS) > 1) {
         changeMeritMedium(true);
     } else {
         changeMeritLow(true);
     }
 
-    setTempVar(VARIABLE_COMPLAINTS, getVar(VARIABLE_COMPLAINTS, 0) + 1);
+    setTempVar(VARIABLE.COMPLAINTS, getVar(VARIABLE.COMPLAINTS, 0) + 1);
 }
 
 function registerUnallowedTalk() {
-    if(getVar(VARIABLE_UNALLOWED_TALKS, 0) > 3) {
+    if(getVar(VARIABLE.UNALLOWED_TALKS, 0) > 3) {
         changeMeritHigh(true);
-    } else if(getVar(VARIABLE_UNALLOWED_TALKS) > 1) {
+    } else if(getVar(VARIABLE.UNALLOWED_TALKS) > 1) {
         changeMeritMedium(true);
     } else {
         changeMeritLow(true);
     }
 
-    setTempVar(VARIABLE_UNALLOWED_TALKS, getVar(VARIABLE_UNALLOWED_TALKS, 0) + 1);
+    setTempVar(VARIABLE.UNALLOWED_TALKS, getVar(VARIABLE.UNALLOWED_TALKS, 0) + 1);
 }
 
 function registerForgetHonorific() {
-    if(getVar(VARIABLE_FORGETTING_HONORIFIC_COUNT, 0) > 3) {
+    if(getVar(VARIABLE.FORGETTING_HONORIFIC_COUNT, 0) > 3) {
         changeMeritHigh(true);
-    } else if(getVar(VARIABLE_FORGETTING_HONORIFIC_COUNT) > 1) {
+    } else if(getVar(VARIABLE.FORGETTING_HONORIFIC_COUNT) > 1) {
         changeMeritMedium(true);
     } else {
         changeMeritLow(true);
     }
 
-
-    setTempVar(VARIABLE_FORGETTING_HONORIFIC_COUNT, getVar(VARIABLE_FORGETTING_HONORIFIC_COUNT, 0) + 1);
+    addPunishmentPoints(getPPRuleIgnored());
+    setTempVar(VARIABLE.FORGETTING_HONORIFIC_COUNT, getVar(VARIABLE.FORGETTING_HONORIFIC_COUNT, 0) + 1);
 }

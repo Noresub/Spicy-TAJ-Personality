@@ -1,28 +1,30 @@
 if (tryRunModuleFetchId(getDefaultModulesSinceRun(), MODULE_STROKING)) {
     //Reset (dunno if it might just be on true for some reason)
-    setTempVar(VARIABLE_STROKE_TRAINING_ACTIVE, false);
+    setTempVar(VARIABLE.STROKE_TRAINING_ACTIVE, false);
 
     if (isStroking()) {
         sendMessage("Stop stroking %SlaveName%", 0);
         stopStroking();
         sendMessage("Trust me. You'll need the pause and it won't last too long anyway %Grin%");
 
-        if (getVar(VARIABLE_STROKE_TRAININGS_DONE, 0) == 0) {
+        if (getVar(VARIABLE.STROKE_TRAININGS_DONE, 0) == 0) {
             sendMessage("So...");
         } else {
             sendMessage("Because...");
-            sendMessage("It's time for your stroke training %EmoteHappy%")
+            sendMessage("It's time for your stroke endurance training %EmoteHappy%")
         }
     } else {
         sendMessage("Okay %SlaveName%");
-        if (getVar(VARIABLE_STROKE_TRAININGS_DONE, 0) != 0) {
-            sendMessage("I think it's time for some stroke training again %EmoteHappy%")
+
+        if (getVar(VARIABLE.STROKE_TRAININGS_DONE, 0) > 0) {
+            sendMessage(random('I think it\'s yet again time for some stroke endurance training %Grin%', "I think it's time for some stroke endurance training again %EmoteHappy%"));
+            sendMessage('Remember to tell me when you are on the edge after the initial warmup round');
         }
     }
 
-    if (setTempVar(VARIABLE_STROKE_TRAININGS_DONE, 0) == 0) {
+    if (getVar(VARIABLE.STROKE_TRAININGS_DONE, 0) == 0) {
         sendMessage("Right now I want to try something new");
-        sendMessage("I call it \"stroke training\"");
+        sendMessage("I call it \"stroke endurance training\"");
         sendMessage("Cock'xercise you might call it %Lol%");
         sendMessage("Well!");
         sendMessage("It's rather simple");
@@ -46,7 +48,7 @@ if (tryRunModuleFetchId(getDefaultModulesSinceRun(), MODULE_STROKING)) {
         sendMessage("So lets stop wasting time and just get you started %Lol%");
     }
 
-    setVar(VARIABLE_STROKE_TRAININGS_DONE, getVar(VARIABLE_STROKE_TRAININGS_DONE, 0) + 1);
+    setVar(VARIABLE.STROKE_TRAININGS_DONE, getVar(VARIABLE.STROKE_TRAININGS_DONE, 0) + 1);
 
     //If we have any clamps on the cock we should move them away
     redistributeClampsForStroking();
@@ -73,8 +75,8 @@ if (tryRunModuleFetchId(getDefaultModulesSinceRun(), MODULE_STROKING)) {
     sendMessage("We will start the moment you hear the beat");
     sendMessage("Make me proud %SlaveName%");
 
-    setTempVar(VARIABLE_STROKE_TRAINING_ACTIVE, true);
-    setTempVar(VARIABLE_STROKE_TRAINING_EDGES_DONE, 0);
+    setTempVar(VARIABLE.STROKE_TRAINING_ACTIVE, true);
+    setTempVar(VARIABLE.STROKE_TRAINING_EDGES_DONE, 0);
 
     startStrokeTraining();
 }
@@ -83,24 +85,28 @@ function startStrokeTraining() {
     let timeToIncreaseLevel = 0;
     setTempVar('timeToIncreaseLevel', timeToIncreaseLevel);
 
-    let level = getVar(VARIABLE_STROKE_TRAINING_LEVEL, 1);
+    let level = getVar(VARIABLE.STROKE_TRAINING_LEVEL, 1);
 
-    let edgesAtStart = getVar(VARIABLE_STROKE_TRAINING_EDGES_DONE, 0);
+    let edgesAtStart = getVar(VARIABLE.STROKE_TRAINING_EDGES_DONE, 0);
 
     while (true) {
         //Interruption occurred
-        if(getVar(VARIABLE_STROKE_TRAINING_EDGES_DONE) !== edgesAtStart || !getVar(VARIABLE_STROKE_TRAINING_ACTIVE, false)) {
+        if(getVar(VARIABLE.STROKE_TRAINING_EDGES_DONE) !== edgesAtStart || !getVar(VARIABLE.STROKE_TRAINING_ACTIVE, false)) {
             return;
         }
 
         timeToIncreaseLevel = getVar('timeToIncreaseLevel');
+        let increaseLevelMax = 20;
 
-        if (timeToIncreaseLevel >= 50) {
+        timeToIncreaseLevel += randomInteger(0, 10);
+        setTempVar('timeToIncreaseLevel', timeToIncreaseLevel);
+
+        if (timeToIncreaseLevel >= increaseLevelMax) {
             timeToIncreaseLevel = 0;
             setTempVar('timeToIncreaseLevel', timeToIncreaseLevel);
 
-            incrementVar(VARIABLE_STROKE_TRAINING_LEVEL, 1);
-            sendDebugMessage('Increasing stoke training level to ' + getVar(VARIABLE_STROKE_TRAINING_LEVEL));
+            incrementVar(VARIABLE.STROKE_TRAINING_LEVEL, 1);
+            sendDebugMessage('Increasing stoke training level to ' + getVar(VARIABLE.STROKE_TRAINING_LEVEL));
 
             level += 1;
             if (level >= 50) {
@@ -110,23 +116,20 @@ function startStrokeTraining() {
 
         playRandomStrokeTrainingBeat(level);
 
-        timeToIncreaseLevel += randomInteger(0, 10);
-        setTempVar('timeToIncreaseLevel', timeToIncreaseLevel);
+        sendDebugMessage('New time to increase stroke endurance training level: ' + getVar('timeToIncreaseLevel') + '/' + increaseLevelMax);
 
-        sendDebugMessage('New time to increase stroke training level: ' + getVar('timeToIncreaseLevel') + '/50');
-
-        if((getVar(VARIABLE_STROKE_TRAINING_EDGES_DONE) !== edgesAtStart || !getVar(VARIABLE_STROKE_TRAINING_ACTIVE, false))) return;
+        if((getVar(VARIABLE.STROKE_TRAINING_EDGES_DONE) !== edgesAtStart || !getVar(VARIABLE.STROKE_TRAINING_ACTIVE, false))) return;
         showTeaseImage(randomInteger(5, 10));
 
-        if((getVar(VARIABLE_STROKE_TRAINING_EDGES_DONE) !== edgesAtStart || !getVar(VARIABLE_STROKE_TRAINING_ACTIVE, false))) return;
+        if((getVar(VARIABLE.STROKE_TRAINING_EDGES_DONE) !== edgesAtStart || !getVar(VARIABLE.STROKE_TRAINING_ACTIVE, false))) return;
         if (isChance(10)) continue;
         showTeaseImage(randomInteger(5, 10));
 
-        if((getVar(VARIABLE_STROKE_TRAINING_EDGES_DONE) !== edgesAtStart || !getVar(VARIABLE_STROKE_TRAINING_ACTIVE, false))) return;
+        if((getVar(VARIABLE.STROKE_TRAINING_EDGES_DONE) !== edgesAtStart || !getVar(VARIABLE.STROKE_TRAINING_ACTIVE, false))) return;
         if (isChance(20)) continue;
         showTeaseImage(randomInteger(5, 10));
 
-        if((getVar(VARIABLE_STROKE_TRAINING_EDGES_DONE) !== edgesAtStart || !getVar(VARIABLE_STROKE_TRAINING_ACTIVE, false))) return;
+        if((getVar(VARIABLE.STROKE_TRAINING_EDGES_DONE) !== edgesAtStart || !getVar(VARIABLE.STROKE_TRAINING_ACTIVE, false))) return;
         if (isChance(30)) continue;
         showTeaseImage(randomInteger(5, 10));
     }
@@ -138,14 +141,14 @@ function startStrokeTraining() {
         }
 
         sendMessage("Keep it up %SlaveName%");
-        incrementVar(VARIABLE_STROKE_TRAINING_LEVEL, -5);
+        incrementVar(VARIABLE.STROKE_TRAINING_LEVEL, -5);
         endStrokeTraining();
         return;
     }
 }
 
 function strokeTrainingEdge() {
-    setTempVar(VARIABLE_STROKE_TRAINING_EDGES_DONE, getVar(VARIABLE_STROKE_TRAINING_EDGES_DONE, 0) + 1);
+    setTempVar(VARIABLE.STROKE_TRAINING_EDGES_DONE, getVar(VARIABLE.STROKE_TRAINING_EDGES_DONE, 0) + 1);
 
     //Stop previous audio
     stopAudio();
@@ -153,20 +156,20 @@ function strokeTrainingEdge() {
     stopStrokingEdgeMessage();
     sendMessage("%LetEdgeFade%");
 
-    let level = getVar(VARIABLE_STROKE_TRAINING_LEVEL);
+    let level = getVar(VARIABLE.STROKE_TRAINING_LEVEL);
 
-    if (getVar(VARIABLE_STROKE_TRAINING_EDGES_DONE) >= 3) {
+    if (getVar(VARIABLE.STROKE_TRAINING_EDGES_DONE) >= 3) {
         sendMessage(random("%Grin%", "%Lol%", "%EmoteHappy%"));
         sendMessage(random("Couldn't handle more huh?", "I guess that was it huh", "So \"no more\" I guess..."));
 
-        sendDebugMessage('Finished stroke training with level ' + level);
+        sendDebugMessage('Finished stroke endurance training with level ' + level);
 
         if (level >= 50) {
             if (getStrictnessForCharacter() == 0) {
                 sendMessage(random("I guess I can't expect more from you when you're at level 50 %Lol%", "I suppose I shouldn't expect more since 50 is the very top %Grin%", "Bravo, you reached level 50!", "Good job, you reached level 50!", "Oh my, you reached level 50!"));
                 addMerits(35);
             } else if (getStrictnessForCharacter() == 1) {
-                sendMessage(random("Level 50... Good!", "There is hope for you slave", "You did good %SlaveName", "You should feel a little proud slave"));
+                sendMessage(random("Level 50... Good!", "There is hope for you slave", "You did good %SlaveName%", "You should feel a little proud slave"));
                 addMerits(30);
             } else if (getStrictnessForCharacter() == 2) {
                 sendMessage(random("Well well I suppose that was okay", "Oh wauw you actually went higher than level 20...", "I'm surprised you even lasted for a few minutes..."));
@@ -219,7 +222,7 @@ function strokeTrainingEdge() {
         if (level < 10) {
             sendMessage("Since you're pathetic and haven't even gone above level 10 I'm not decreasing your level...");
         } else {
-            incrementVar(VARIABLE_STROKE_TRAINING_LEVEL, -5);
+            incrementVar(VARIABLE.STROKE_TRAINING_LEVEL, -5);
         }
 
         endStrokeTraining();
@@ -231,12 +234,14 @@ function strokeTrainingEdge() {
 
     interactWithRandomToys();
 
+    sendMessage('Be ready for it to start again very soon %Grin%');
+
     sleep(randomInteger(10, 25));
     startStrokeTraining();
 }
 
 function endStrokeTraining() {
-    setTempVar(VARIABLE_STROKE_TRAINING_ACTIVE, false);
+    setTempVar(VARIABLE.STROKE_TRAINING_ACTIVE, false);
     //run("Session/Modules/DecideModule.js");
 }
 

@@ -6,19 +6,45 @@ const NONE = 0;
 
 const BODY_PARTS = [];
 const BODY_PART_NIPPLE_L = registerTwosidedBodyPart("nipple", 4);
+
+BODY_PART_NIPPLE_L.isUsed = function(toy) {
+    return !NIPPLE_CLAMPS.isToyOn();
+};
+
 const BODY_PART_NIPPLE_R = BODY_PARTS[currentBodyPartId - 1];
+BODY_PART_NIPPLE_R.isUsed = BODY_PART_NIPPLE_L.isUsed;
+
 const BODY_PART_BALLS = registerBodyPart("balls", 20);
+BODY_PART_BALLS.isUsed = function(toy) {
+    return isFullSizedChastityOn() || getVar(VARIABLE.IS_BALL_CRUSHER_ON, false) || E_STIM_TOY.isToyOn() || PARACHUTE_TOY.isToyOn();
+};
+
 const BODY_PART_THIGH_L = registerTwosidedBodyPart("thigh", 5);
 const BODY_PART_THIGH_R = BODY_PARTS[currentBodyPartId - 1];
+
 const BODY_PART_TONGUE = registerBodyPart("tongue", 4);
+BODY_PART_TONGUE.isUsed = function(toy) {
+    return isGaged() && currentGagType !== GAG_TYPE_SPIDER_GAG;
+};
+
 const BODY_PART_PENIS_HEAD = registerBodyPart("penis head", 3);
+
+
 const BODY_PART_PENIS_SHAFT = registerBodyPart("penis shaft", 7);
+BODY_PART_PENIS_HEAD.isUsed = BODY_PART_PENIS_HEAD.isUsed();
 const BODY_PART_EAR_L = registerTwosidedBodyPart("ear", 3);
 const BODY_PART_EAR_R = BODY_PARTS[currentBodyPartId - 1];
 
+const BODY_PART_ASS = registerBodyPart("ass", 0);
+BODY_PART_ASS.isUsed = function(toy) {
+    return !isPlugged() && !E_STIM_PLUG_TOY.isToyOn();
+};
+
 function registerTwosidedBodyPart(name, maxClamps) {
-    registerBodyPart(name, maxClamps, LEFT);
+    let leftPart = registerBodyPart(name, maxClamps, LEFT);
     registerBodyPart(name, maxClamps, RIGHT);
+
+    return leftPart;
 }
 
 function registerBodyPart(name, maxClamps, side = NONE) {
@@ -33,6 +59,18 @@ function registerBodyPart(name, maxClamps, side = NONE) {
     const bodyPart = {
         id: currentBodyPartId++, name: name, sidedName: sidedName, side: side, currentClamps: 0, maxClamps: maxClamps,
 
+        printDebug: function () {
+            sendDebugMessage(this.sidedName + ': ' + this.id);
+            sendDebugMessage('Has Opposite: ' + this.hasOppositeBodyPart());
+            sendDebugMessage('Side:' + this.side);
+
+            if(this.hasOppositeBodyPart()) {
+                sendDebugMessage('Opposite:' + this.getOppositeBodyPart().sidedName);
+            }
+
+            sendDebugMessage('Max: ' + this.isMaxClampsReached());
+        },
+
         getOppositeBodyPart: function () {
             if (this.side == LEFT) {
                 return BODY_PARTS[this.id + 1];
@@ -43,8 +81,8 @@ function registerBodyPart(name, maxClamps, side = NONE) {
             return null;
         },
 
-        normalize: function() {
-            if(this.hasOppositeBodyPart()) {
+        normalize: function () {
+            if (this.hasOppositeBodyPart()) {
                 return this.getLeftSide();
             }
 
@@ -87,20 +125,19 @@ function registerBodyPart(name, maxClamps, side = NONE) {
             return this.maxClamps - this.currentClamps;
         },
 
+        isUsed: function(toy) {
+            return false;
+        },
+
         canAttachClamps: function () {
             //No pins to penis/balls if in chastity
             if (isInChastity() && (this === BODY_PART_PENIS_SHAFT || this === BODY_PART_PENIS_HEAD || this === BODY_PART_BALLS && currentChastityCage.isFullSizedBelt())) {
                 return false;
             }
 
-            //No pins to balls if parachute is on
-            if (PARACHUTE_TOY.isToyOn() && this === BODY_PART_BALLS) {
+            //No pins if this body part is used
+            if (this.isUsed()) {
                 return false;
-            }
-
-            //No pins on nipples if nipple clamps are already attached
-            if(this === BODY_PART_NIPPLE_R || this === BODY_PART_NIPPLE_L) {
-                return !NIPPLE_CLAMPS.isToyOn();
             }
 
             //Do not check for max clamps here because we might want to handle that individually
@@ -112,7 +149,6 @@ function registerBodyPart(name, maxClamps, side = NONE) {
             let rightSide = this.getRightSide();
             let leftSide = this.getLeftSide();
 
-            let amount = 0;
             let leftAmount = leftSide.getClampAmountToAttach(maxAmount, preferredAmount);
             let rightAmount = rightSide.getClampAmountToAttach(maxAmount, preferredAmount);
 
@@ -150,4 +186,15 @@ function registerBodyPart(name, maxClamps, side = NONE) {
 
     BODY_PARTS[bodyPart.id] = bodyPart;
     return bodyPart;
+}
+
+function afterLoadBodyParts() {
+    //The toys are loaded after body parts so we need to delay this
+    BODY_PART_PENIS_SHAFT.isUsed = function(toy) {
+        if(isInChastity()) {
+            return true;
+        }
+
+        return false;
+    };
 }

@@ -14,18 +14,17 @@
                 sendMessage("Orgasm however you like! ");
                 sendMessage("Lock yourself back up afterwards! %Moan%");
 
-                if(isVar(VARIABLE_TRAINING_ORGASM_TODAY)) {
+                if(isVar(VARIABLE.TRAINING_ORGASM_TODAY)) {
                     sendMessage('I know I am already allowing you an orgasm for another training today');
                     sendMessage('Which means you are free to schedule this orgasm on top of the other one anywhere in the next 48 hours');
                 } else {
-                    setTempVar(VARIABLE_TRAINING_ORGASM_TODAY, true);
+                    setTempVar(VARIABLE.TRAINING_ORGASM_TODAY, true);
                 }
 
                 registerOrgasm();
                 delVar("ChastityExamStartDate");
-                setVar(VARIABLE_CHASTITY_TRAINING, false);
-                setVar(VARIABLE_CHASTITY_ON, true);
-                setVar(VARIABLE_LONG_TERM_CHASTITY, true);
+                setVar(VARIABLE.CHASTITY_TRAINING, false);
+                setVar(VARIABLE.CHASTITY_ON, true);
             } else {
                 sendMessage("Awww that's too bad %EmoteSad%");
                 sendMessage("That disappoints me %SlaveName%");
@@ -56,6 +55,6 @@ function startChastityExam() {
     setDate('ChastityExamStartDate');
     sendMessage("Your chastity exam starts now");
     sendMessage("You are to remain locked for 7 consecutive days!");
-    sendMessage("Your only release time is if you are permitted in sessions!");
+    sendMessage("Your only release time is when you are permitted during sessions!");
     sendMessage("Good luck %SlaveName%");
 }

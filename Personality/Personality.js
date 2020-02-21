@@ -44,7 +44,8 @@ function setUpPersonalityVars() {
     switch(ACTIVE_PERSONALITY_ID) {
         case ENFORCING_PERSONALITY_ID:
             for(let x = 0; x < LIMITS.length; x++) {
-                if(LIMITS[x].getLimit() != LIMIT_NEVER) {
+                if(LIMITS[x].getLimit() !== LIMIT_NEVER) {
+                    //Limits are by default enabled if not previously disabled
                     LIMITS[x].setLimit(LIMIT_ASKED_YES);
                 }
             }
@@ -189,11 +190,39 @@ function isDomBirthday() {
 
 function addMerits(meritChange) {
     //Min 0 max 1000
-    setVar(VARIABLE_MERITS, Math.min(1000, Math.max(0, getVar(VARIABLE_MERITS) + meritChange)));
+    setVar(VARIABLE.MERITS, Math.min(1000, Math.max(0, getVar(VARIABLE.MERITS) + meritChange)));
 }
 
 function isEnforcingPersonality() {
     return ENFORCING_PERSONALITY_ID === ACTIVE_PERSONALITY_ID;
+}
+
+function sendGreeting() {
+    const greeting = ["Hello", "Greetings", "Hey", "Hi"];
+
+    const date = new Date();
+    if (date.getHours() > 6 && date.getHours() < 12) {
+        greeting.push("Good morning");
+    } else if (date.getHours() >= 12 && date.getHours() < 18) {
+        greeting.push("Good afternoon");
+    } else if (date.getHours() >= 18 && date.getHours() < 24) {
+        greeting.push("Good evening");
+    }
+
+
+    sendMessage(greeting[randomInteger(0, greeting.length - 1)] + " %SlaveName%", 0);
+    playSound("Audio/Spicy/Starts/Hello/*.mp3");
+
+    let answer = createInput(15);
+    if (answer.isTimeout()) {
+        changeMeritHigh(true);
+        sendMessage(random("Not feeling like greeting your domme today", "Seems like you are not in the mood to greet me", "Being impolite today", "Being rude today") + " %SlaveName%?");
+        sendMessage("I won't tolerate " + random("impolite", "rude", "disrespectful", "ignorant") + " behaviour!");
+        return false;
+    } else if (answer.containsIgnoreCase("Hello", "Greetings", "Hey", "Hi")) {
+        changeMeritLow(false);
+        return true;
+    }
 }
 
 function sendAsMuchFun() {

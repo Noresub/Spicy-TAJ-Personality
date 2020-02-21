@@ -21,13 +21,13 @@
     return exp;
 }
 
-//sendMessage("I added your exp and your current level is " + getVar(VARIABLE_ASS_LEVEL));
+//sendMessage("I added your exp and your current level is " + getVar(VARIABLE.ASS_LEVEL));
 
 for(let x = 2; x <= 30; x += 4) {
     sendDebugMessage('Level ' + x + ': ' + getChastityEXPForLevel(x));
 }*/
 
-//sendDebugMessage('You will need ' + (getChastityEXPForLevel(10) - getVar(VARIABLE_ASS_EXPERIENCE)) + ' more exp for the next level');
+//sendDebugMessage('You will need ' + (getChastityEXPForLevel(10) - getVar(VARIABLE.ASS_EXPERIENCE)) + ' more exp for the next level');
 //unlockChastityCage();
 
 /*MODULE_HISTORY.clearHistory();
@@ -35,14 +35,24 @@ run('Session/Modules/Humiliation/Dynamic/AnalHumiliation.js');
 appendPenetratingSession('dildo');*/
 //Reduce punishment point multiplier each day if the change would be negative
 
-{
-    let ppMultiplier = getPunishmentPointMultiplierChange();
-    sendDebugMessage('PP Mutliplier change is ' + ppMultiplier);
+/*
+sendVirtualAssistantMessage(random("Launching", "Initiating", "Starting", "Establishing") + " session with Mistress");
+run("Session/StartSession.js");
 
-    if (ppMultiplier < 0) {
-        let currentMult = getVar(VARIABLE_PUNISHMENT_POINT_MULTIPLIER, 1);
-        sendDebugMessage('Reducing pp multiplier from ' + currentMult);
-        setPunishmentPointMultiplier(currentMult - ppMultiplier);
-        sendDebugMessage('To ' + getVar(VARIABLE_PUNISHMENT_POINT_MULTIPLIER, 1))
-    }
+
+incrementVar(VARIABLE.BLOWJOB_EXPERIENCE, getTrainingEXPForLevel(20));
+incrementVar(VARIABLE.ASS_EXPERIENCE, getTrainingEXPForLevel(20));
+while(getTrainingEXPForLevel(getVar(VARIABLE.ASS_LEVEL) + 1) <= getVar(VARIABLE.ASS_EXPERIENCE)) {
+    incrementVar(VARIABLE.ASS_LEVEL, 1);
 }
+
+while(getTrainingEXPForLevel(getVar(VARIABLE.BLOWJOB_LEVEL) + 1) <= getVar(VARIABLE.BLOWJOB_EXPERIENCE)) {
+    incrementVar(VARIABLE.BLOWJOB_LEVEL, 1);
+}
+
+sendDebugMessage(getVar(VARIABLE.BLOWJOB_LEVEL));
+
+setVar(VARIABLE.CHASTITY_ON, true);
+ */
+
+

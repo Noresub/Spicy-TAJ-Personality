@@ -1,6 +1,6 @@
 {
     //No punishments with higher than medium should be line writing
-    if (PUNISHMENT_CURRENT_LEVEL.id > PUNISHMENT_LEVEL_MEDIUM.id) {
+    if (PUNISHMENT_CURRENT_LEVEL.id > PUNISHMENT_LEVEL.MEDIUM.id) {
         runPunishment(PUNISHMENT_CURRENT_LEVEL);
     } else if (tryRunPunishmentFetchId(MODULE_LINE_WRITING)) {
         sendMessage('%SlaveName%');
@@ -14,10 +14,10 @@
 
         let sentences = [];
 
-        sentences.push("I need to be on my very best behaviour and I owe it to my %DomHonorific% to try much hard",
+        sentences.push("I need to be on my very best behaviour and I owe it to my %DomHonorific% to try much harder",
             "I'm in need of constant discipline, even a short moment without and I cannot comprehend the dire consequences",
             "I dream of the day where I will be placed in a chastity belt, knowing that in just a moment the key will be destroyed",
-            "I have been bad and this is my punishment, wasting time, doing nohing constructive or anything recreational",
+            "I have been bad and this is my punishment, wasting time, doing nothing constructive or anything recreational",
             "I should try much much harder to be a proper servant. I'm blessed that %DomHonorific% %DomName% is merciful",
             "I should count myself lucky because this could be harsh caning instead",
             "I have been a bad boy and deserve to be punished to my dommes liking",
@@ -25,8 +25,8 @@
             "I will never stop serving, I will never be free, I am not equal to women nor real men",
             "I wake up, I serve, I serve some more, I sleep. Horny...",
             "I love it when my cock is finally granted attention, being bad doesn't make that happen.",
-            "I need to stop being bad because it means I won't have much playtime with HER cock.",
-            "I need to realize this isn't about me, it's about making her happy.");
+            "I need to stop being bad because it means I won't have much playtime with HER cock",
+            "I need to realize this isn't about me, it's about making her happy");
 
 
 
@@ -40,7 +40,7 @@
         for (let x = 0; x < PUNISHMENT_CURRENT_LEVEL.id + 1; x++) {
             let randomSentence = sentences[randomInteger(0, sentences.length - 1)];
 
-            let times = randomInteger((PUNISHMENT_CURRENT_LEVEL.id + 1) * 5, (PUNISHMENT_CURRENT_LEVEL.id + 3) * 5);
+            let times = randomInteger((PUNISHMENT_CURRENT_LEVEL.id + 1) * 4, (PUNISHMENT_CURRENT_LEVEL.id + 3) * 4);
 
             let tries = randomInteger(2, 3);
 
@@ -54,7 +54,7 @@
                 run("Dungeon/PunishmentBase.js");
                 break;
             } else {
-                sendMessage("Oh %SlaveName% " + random("thats so true", "I agree", "you're soo right!", "for once I think you understand %Grin%"));
+                sendMessage("Oh %SlaveName% " + random("that's so true", "I agree", "you're soo right!", "for once I think you understand %Grin%"));
             }
         }
 

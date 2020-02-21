@@ -1,6 +1,6 @@
 setVar("GroundingCounter",0);
 
-switch(getVar(VARIABLE_PUNISHMENT_PUNISHER)) {
+switch(getVar(VARIABLE.PUNISHMENT_PUNISHER)) {
 
 	case 1 :
 	// @Goto(Hello)
@@ -24,7 +24,7 @@ switch(getVar(VARIABLE_PUNISHMENT_PUNISHER)) {
 sendMessage("Well "+ random("hello","hi") +" %SlaveName%");// #DT4 @Goto(Start)
 
 
-switch(getVar(VARIABLE_PUNISHMENT_PUNISHER)){
+switch(getVar(VARIABLE.PUNISHMENT_PUNISHER)){
 	case 1 :
 	//(Domme)
 	sendMessage(random("Well well","Oh my","Well") + " %SlaveName%");// #DT4
@@ -119,7 +119,7 @@ break;
 	sendMessage("Every once in a while a few numbers will appear and you will have exactly 5 seconds to write back the number colored red ");//#DT4
 	sendMessage("If not I promise you your %DomHonorific% won't be happy.. ");//#DT4
 	sendMessage("And ohh.. ");//#DT4
-	sendMessage("Its gonna cost you 10 gold and the punishment prolonges"); //#DT4
+	sendMessage("It's gonna cost you 10 gold and the punishment prolonges"); //#DT4
 	sendMessage("Enjoy!"); //#DT4 
 //	 @SetVar[Timer]=[0]
 	// @CountVar[Timer]
@@ -141,7 +141,7 @@ break;
 			sendMessage("Time out.." );
 			showImage("Images/Spicy/Punishment/Grounding/BlackBase.*");
 			changeMeritLow(true);
-			setVar(VARIABLE_GOLD,getVar(VARIABLE_GOLD)-10); 
+			setVar(VARIABLE.GOLD,getVar(VARIABLE.GOLD)-10); 
 			//@TempFlag(PunishmentComplete)
 			donetime=donetime.addSecond(randomInteger(60,180));
 			break;
@@ -155,7 +155,7 @@ break;
 					else{ sendMessage("Wrong.. You were supposed to write "+answerval+".. ");
 						showImage("Images/Spicy/Punishment/Grounding/BlackBase.*");
 						changeMeritLow(true);
-						setVar(VARIABLE_GOLD,getVar(VARIABLE_GOLD)-10); 
+						setVar(VARIABLE.GOLD,getVar(VARIABLE.GOLD)-10); 
 						//@TempFlag(PunishmentComplete)
 						donetime=donetime.addSecond(randomInteger(60,180));
 						break;
@@ -164,7 +164,7 @@ break;
 					sendMessage("Wrong.. You were supposed to write "+answerval+".. that wasn't even a number %SlaveName% ");
 						showImage("Images/Spicy/Punishment/Grounding/BlackBase.*");
 						changeMeritLow(true);
-						setVar(VARIABLE_GOLD,getVar(VARIABLE_GOLD)-10); 
+						setVar(VARIABLE.GOLD,getVar(VARIABLE.GOLD)-10); 
 						//@TempFlag(PunishmentComplete)
 						donetime=donetime.addSecond(randomInteger(60,180));
 						break;

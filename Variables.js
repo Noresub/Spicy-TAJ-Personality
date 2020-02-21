@@ -1,256 +1,290 @@
-const VARIABLE_CHASTITY_ON = "chastityOn";
+const MATERIAL = {
+    //Materials
+    SILICON: 0,
+    GLASS: 1,
+    METAL: 2,
+    PLASTIC: 3
+};
 
-const VARIABLE_CHASTITY_CAGE_ON_TYPE = "chastityCageOnType";
+const VARIABLE = {
+    CHASTITY_ON: "chastityOn",
 
+    CHASTITY_CAGE_ON_TYPE: "chastityCageOnType",
 
-const VARIABLE_LINGERIE_ON = "lingerieOn";
+    SPICY_VERSION: "latestVersion",
 
-const VARIABLE_SLAVE_TYPE = "slaveType";
 
-//Materials
-const MATERIAL_SILICON = 0;
-const MATERIAL_GLASS = 1;
-const MATERIAL_METAL = 2;
-const MATERIAL_PLASTIC = 3;
+    LINGERIE_ON: "lingerieOn",
 
+    SLAVE_TYPE: "slaveType",
 
-//Full time
-const VARIABLE_MIN_WEEKLY_VISITS = "minWeeklyVisits";
-const VARIABLE_MIN_WEEKLY_CHORE_TIME = "minWeeklyChoreTime";
 
-//Home
-const VARIABLE_HOME_TYPE = 'homeType';
+    //Full time
+    MIN_WEEKLY_VISITS: "minWeeklyVisits",
+    MIN_WEEKLY_CHORE_TIME: "minWeeklyChoreTime",
 
-//Exercise
-const VARIABLE_EXERCISE_TIMES = 'exerciseTimes';
-const VARIABLE_EXERCISE_LAST = 'lastExercise';
+    //Home
+    HOME_TYPE: 'homeType',
 
-//Interaction
-const VARIABLE_RESPONSE_WILL_DO_ANYTHING = 'responseWillDoAnything';
+    //Exercise
+    EXERCISE_TIMES: 'exerciseTimes',
+    EXERCISE_LAST: 'lastExercise',
 
-const VARIABLE_NEXT_TIME_ICE_CUBES = 'nextTimeIceCubes';
+    //Interaction
+    RESPONSE_WILL_DO_ANYTHING: 'responseWillDoAnything',
 
-//Chores
-const VARIABLE_CHORE_KITCHEN = 'choreKitchen';
-const VARIABLE_CHORE_BATHROOM = 'choreBathroom';
-const VARIABLE_CHORE_FINANCE = 'choreFinance';
+    NEXT_TIME_ICE_CUBES: 'nextTimeIceCubes',
 
-const VARIABLE_TOTAL_CHORES_DONE = "totalChoresDone";
+    //Chores
+    CHORE_KITCHEN: 'choreKitchen',
+    CHORE_BATHROOM: 'choreBathroom',
+    CHORE_FINANCE: 'choreFinance',
 
-const VARIABLE_CHORE_WARNINGS = "choreWarnings";
+    TOTAL_CHORES_DONE: "totalChoresDone",
 
-const VARIABLE_KINKY_CHORE_CHANCE = "kinkyChoreChance";
+    CHORE_WARNINGS: "choreWarnings",
 
-const VARIABLE_TOTAL_CHORES_TIME = "totalChoresTime";
+    KINKY_CHORE_CHANCE: "kinkyChoreChance",
 
-const VARIABLE_WEEKLY_CHORES_DONE = "weeklyChoresDone";
-const VARIABLE_WEEKLY_CHORES_TIME = "weeklyChoresTime";
+    TOTAL_CHORES_TIME: "totalChoresTime",
 
-const VARIABLE_DENIAL_LIMIT = "denialLimit";
-const VARIABLE_DENIAL_LEVEL = "denialLevel";
-const VARIABLE_DENIAL_HARD_LIMIT_TYPE = "denialHardLimitType";
-const VARIABLE_DENIAL_HARD_LIMIT_ORGASM_TODAY = "denialHardLimitOrgasmToday";
-const VARIABLE_DENIAL_HARD_LIMIT_FREEDOM_TODAY = "denialHardLimitFreedomToday";
+    WEEKLY_CHORES_DONE: "weeklyChoresDone",
+    WEEKLY_CHORES_TIME: "weeklyChoresTime",
 
-const VARIABLE_GOLD = "gold";
+    DENIAL_LIMIT: "denialLimit",
+    DENIAL_LEVEL: "denialLevel",
+    DENIAL_HARD_LIMIT_TYPE: "denialHardLimitType",
+    DENIAL_HARD_LIMIT_ORGASM_TODAY: "denialHardLimitOrgasmToday",
+    DENIAL_HARD_LIMIT_FREEDOM_TODAY: "denialHardLimitFreedomToday",
 
-const VARIABLE_MERITS = "merits";
+    GOLD: "gold",
 
-const VARIABLE_LOCKED_UP_LIMIT = "lockedUpLimit";
+    MERITS: "merits",
 
-const VARIABLE_ORGASM_POINTS = "orgasmPoints";
-const VARIABLE_REQUIRED_ORGASM_POINTS = "requiredOrgasmPoints";
-const VARIABLE_ORGASM_RATION = "orgasmRatio";
+    LOCKED_UP_LIMIT: "lockedUpLimit",
 
+    ORGASM_POINTS: "orgasmPoints",
+    REQUIRED_ORGASM_POINTS: "requiredOrgasmPoints",
 
-const VARIABLE_LAST_ORGASM = "lastOrgasm";
-const VARIABLE_LAST_RUINED_ORGASM = "lastRuined";
+    //Start chance is 50
+    ORGASM_RATION: "orgasmRatio",
 
-const VARIABLE_FINISHED_SETUP = "finishedSetup";
-const VARIABLE_FINISHED_FIRST_SESSION = "finishedFirstSession";
 
-const VARIABLE_ORGASM_FREQUENCY = "orgasmFrequency";
+    LAST_ORGASM: "lastOrgasm",
+    LAST_RUINED_ORGASM: "lastRuined",
 
-//Chastity
-const VARIABLE_CHASTITY_TRAINING = "chastityTraining";
+    FINISHED_SETUP: "finishedSetup",
+    FINISHED_FIRST_SESSION: "finishedFirstSession",
 
-const VARIABLE_HAS_CHASTITY = "hasChastity";
-const VARIABLE_ACTIVE_CHASTITY_CAGE = "activeChastityCage";
+    ORGASM_FREQUENCY: "orgasmFrequency",
 
-const VARIABLE_CHASTITY_SPIKES_ON = "chastitySpikesOn";
-const VARIABLE_CHASTITY_DILATOR_ON = "chastityDilatorOn";
-const VARIABLE_CHASTITY_CAGE_IS_PIERCED = "chastityCageIsPierced";
+    //Chastity
+    CHASTITY_TRAINING: "chastityTraining",
 
-const VARIABLE_CHASTITY_HAS_TIMED_LOCKBOX = "chastityHasTimedLockBox";
-const VARIABLE_CHASTITY_HAS_COMBINATION_LOCK = "chastityHasCombinationLock";
+    HAS_CHASTITY: "hasChastity",
+    ACTIVE_CHASTITY_CAGE: "activeChastityCage",
 
-const VARIABLE_CHASTITY_KEY_LOCKED_COMBINATION = "chastityKeyLockedCombination";
+    CHASTITY_SPIKES_ON: "chastitySpikesOn",
+    CHASTITY_DILATOR_ON: "chastityDilatorOn",
+    CHASTITY_CAGE_IS_PIERCED: "chastityCageIsPierced",
 
-const VARIABLE_CHASTITY_TOY_MODE = "toyChastityInteractionMode";
+    CHASTITY_HAS_TIMED_LOCKBOX: "chastityHasTimedLockBox",
+    CHASTITY_HAS_COMBINATION_LOCK: "chastityHasCombinationLock",
 
-const VARIABLE_LOCKED_DAYS_IN_ROW = "lockedUpDaysInRow";
+    CHASTITY_KEY_LOCKED_COMBINATION: "chastityKeyLockedCombination",
 
-const VARIABLE_LOCKED_UP_UNTIL = "lockedUpUntil";
+    CHASTITY_TOY_MODE: "toyChastityInteractionMode",
 
-const VARIABLE_LAST_CHASTITY_CLEAN = "lastChastityCleanDate";
+    LOCKED_DAYS_IN_ROW: "lockedUpDaysInRow",
 
-const VARIABLE_WAITING_FOR_CHASTITY_KEY_RETURN = "waitingForChastityKeyReturn";
+    LOCKED_UP_UNTIL: "lockedUpUntil",
 
-//Chastity training
-const VARIABLE_CHASTITY_LEVEL = 'chastityLevel';
-const VARIABLE_CHASTITY_EXPERIENCE = 'chastityExperience';
-const VARIABLE_TASK_CHASTITY_EXPERIENCE = 'taskChastityExperience';
-const VARIABLE_CHASTITY_TRAININGS_DONE = 'chastityTrainingsDone';
-const VARIABLE_AFRAID_OF_CHASTITY = 'afraidOfChastity';
-const VARIABLE_LAST_CHASTITY_TASK_ID = 'lastChastityTaskId';
-const VARIABLE_CHASTITY_TASKS_IN_ROW = 'chastityTasksInRow';
+    LAST_CHASTITY_CLEAN: "lastChastityCleanDate",
 
-//TODO: Enforcing personality intro after chastity exam and kind intro with asking after exam/at beginning
-const VARIABLE_LONG_TERM_CHASTITY = 'chastityLongTerm';
+    WAITING_FOR_CHASTITY_KEY_RETURN: "waitingForChastityKeyReturn",
 
-//Anal training
-const VARIABLE_ASS_LEVEL = "assLevel";
-const VARIABLE_ASS_TASKS_IN_ROW = "assTasksInRow";
-const VARIABLE_ASS_EXPERIENCE = 'assExperience';
-const VARIABLE_TASK_ASS_EXPERIENCE = 'taskAssExperience';
-const VARIABLE_LAST_ASS_TASK_ID = 'lastAssTaskId';
-const VARIABLE_ASS_TRAINING = 'assTraining';
-const VARIABLE_ASS_TRAININGS_DONE = 'assTrainingsDone';
+    //Chastity training
+    CHASTITY_LEVEL: 'chastityLevel',
+    CHASTITY_EXPERIENCE: 'chastityExperience',
+    TASK_CHASTITY_EXPERIENCE: 'taskChastityExperience',
+    CHASTITY_TRAININGS_DONE: 'chastityTrainingsDone',
+    AFRAID_OF_CHASTITY: 'afraidOfChastity',
+    LAST_CHASTITY_TASK_ID: 'lastChastityTaskId',
+    CHASTITY_TASKS_IN_ROW: 'chastityTasksInRow',
 
-//Blowjob training
-const VARIABLE_BLOWJOB_LEVEL = "blowjobLevel";
-const VARIABLE_BLOWJOB_TASKS_IN_ROW = "blowjobTasksInRow";
-const VARIABLE_BLOWJOB_EXPERIENCE = 'blowjobExperience';
-const VARIABLE_TASK_BLOWJOB_EXPERIENCE = 'taskAssExperience';
-const VARIABLE_LAST_BLOWJOB_TASK_ID = 'lastAssTaskId';
-const VARIABLE_BLOWJOB_TRAINING = 'blowjobTraining';
-const VARIABLE_BLOWJOB_TRAININGS_DONE = 'blowjobTrainingsDone';
+    //TODO: Enforcing personality intro after chastity exam and kind intro with asking after exam/at beginning
+    LONG_TERM_CHASTITY: 'chastityLongTerm',
 
-const VARIABLE_TRAINING_ORGASM_TODAY = "trainingOrgasmToday";
-const VARIABLE_TRAINING_INTRODUCTION_DONE = 'trainingIntroductionDone';
+    ASKED_FOR_KEYHOLDER: 'askedForKeyholder',
 
-//Toys
+    PARTNER_IS_KEYHOLDER: 'partnerIsKeyholder',
 
-const VARIABLE_IS_PLUGGED = "isPlugged";
+    KEYHOLDER_FANTASIZE: 'keyholderFantasize',
 
-const VARIABLE_TOY_GAG_INTERACTION_MODE = "toyGagInteractionMode";
-const VARIABLE_IS_GAGED = "isGaged";
+    //Anal training
+    ASS_LEVEL: "assLevel",
+    ASS_TASKS_IN_ROW: "assTasksInRow",
+    ASS_EXPERIENCE: 'assExperience',
+    TASK_ASS_EXPERIENCE: 'taskAssExperience',
+    LAST_ASS_TASK_ID: 'lastAssTaskId',
+    ASS_TRAINING: 'assTraining',
+    ASS_TRAININGS_DONE: 'assTrainingsDone',
 
+    //Blowjob training
+    BLOWJOB_LEVEL: "blowjobLevel",
+    BLOWJOB_TASKS_IN_ROW: "blowjobTasksInRow",
+    BLOWJOB_EXPERIENCE: 'blowjobExperience',
+    TASK_BLOWJOB_EXPERIENCE: 'taskAssExperience',
+    LAST_BLOWJOB_TASK_ID: 'lastAssTaskId',
+    BLOWJOB_TRAINING: 'blowjobTraining',
+    BLOWJOB_TRAININGS_DONE: 'blowjobTrainingsDone',
 
-const VARIABLE_IS_BALLS_TIED = "isBallsTied";
-const VARIABLE_LAST_BALLS_TIE = "lastBallsTie";
-const VARIABLE_LAST_BALLS_UNTIE = "lastBallsUntie";
-const VARIABLE_IS_BALL_CRUSHER_ON = "isBallCrusherOn";
+    TRAINING_ORGASM_TODAY: "trainingOrgasmToday",
+    TRAINING_INTRODUCTION_DONE: 'trainingIntroductionDone',
 
-const VARIABLE_IS_KNEELING = "isKneeling";
-const VARIABLE_KNEELING_STARTED = "kneelingStarted";
+    //Toys
+    IS_PLUGGED: "isPlugged",
 
-const VARIABLE_BALL_CRUSHER_TWISTS_TO_APPLY = "ballCrusherTwistsToApply";
-const VARIABLE_BALL_CRUSHER_MAX_TWISTS = "ballCrusherMaxTwists";
+    TOY_GAG_INTERACTION_MODE: "toyGagInteractionMode",
+    IS_GAGED: "isGaged",
 
-const VARIABLE_MAX_DILDO_THICKNESS_TODAY = "maxDildoThicknessToday";
 
-//Icecube
-const VARIABLE_LAST_ICE_CUBE_UP_ASS_DATE = "lastIceCubeUpAssDate";
-const VARIABLE_IS_ICECUBE_BYPASS_ANAL = "isIceCubeBypassAnal";
+    IS_BALLS_TIED: "isBallsTied",
+    LAST_BALLS_TIE: "lastBallsTie",
+    LAST_BALLS_UNTIE: "lastBallsUntie",
+    IS_BALL_CRUSHER_ON: "isBallCrusherOn",
 
-const VARIABLE_LAST_DILDO_SWAP_DATE = "lastDildoSwapDate";
+    IS_KNEELING: "isKneeling",
+    KNEELING_STARTED: "kneelingStarted",
 
-//Modules
-const VARIABLE_POSITION_TRAINING_STARTED = "positionTrainingStarted";
-const VARIABLE_POSITION_LEVEL = "positionLevel";
+    BALL_CRUSHER_TWISTS_TO_APPLY: "ballCrusherTwistsToApply",
 
-const VARIABLE_STROKE_TRAINING_ACTIVE = "strokeTrainingActive";
-const VARIABLE_STROKE_TRAININGS_DONE = "strokeTrainingsDone";
-const VARIABLE_STROKE_TRAINING_LEVEL = "strokeTrainingLevel";
-const VARIABLE_STROKE_TRAINING_EDGES_DONE = "strokeTrainingEdgesDone";
+    //Max twists till pain limit reached. 1 per half round
+    BALL_CRUSHER_MAX_TWISTS: "ballCrusherMaxTwists",
 
-const VARIABLE_LICK_TRAININGS_DONE = "lickTrainingsDone";
+    MAX_DILDO_THICKNESS_TODAY: "maxDildoThicknessToday",
 
-const VARIABLE_MODEL_RATINGS = "modelRatings";
-const VARIABLE_MODEL_RATINGS_DONE = "modelRatingsDone";
+    //Icecube
+    LAST_ICE_CUBE_UP_ASS_DATE: "lastIceCubeUpAssDate",
+    IS_ICECUBE_BYPASS_ANAL: "isIceCubeBypassAnal",
 
-const VARIABLE_EDGE_A_TONS_DONE = "edgeATonsDone";
-const VARIABLE_EDGE_A_TON_EDGE_RECORD = "edgeATonEdgeRecord";
+    LAST_DILDO_SWAP_DATE: "lastDildoSwapDate",
 
-const VARIABLE_STROKE_MODULE_PAUSE_FREQUENCY = 'strokeModulePauseFrequency';
 
+    //E-Stim
+    E_STIM_MODES: 'eStimModes',
 
+    //Enema
+    ENEMA_INTRO: "enemaIntro",
+    ENEMA_TASK_TODAY: "enemaTaskToday",
+    ENEMA_TASK_SET: "enemaTaskSet",
 
-//Sub
-const VARIABLE_DEVOTION = "subDevotion";
+    //Modules
+    POSITION_TRAINING_STARTED: "positionTrainingStarted",
+    POSITION_LEVEL: "positionLevel",
 
-/**
- * Number between 1 - 10
- * @type {string}
- */
-const VARIABLE_SUB_PAIN_TOLERANCE = "subPainTolerance";
+    STROKE_TRAINING_ACTIVE: "strokeTrainingActive",
+    STROKE_TRAININGS_DONE: "strokeTrainingsDone",
+    STROKE_TRAINING_LEVEL: "strokeTrainingLevel",
+    STROKE_TRAINING_EDGES_DONE: "strokeTrainingEdgesDone",
 
-const VARIABLE_LAST_PAIN_TOLERANCE_INCREASE = "lastPainToleranceIncrease";
+    LICK_TRAININGS_DONE: "lickTrainingsDone",
 
-const VARIABLE_EDGE_STARTED_DATE = "edgeStartedDate";
+    MODEL_RATINGS: "modelRatings",
+    MODEL_RATINGS_DONE: "modelRatingsDone",
 
-const VARIABLE_SOFT_COCK_LENGTH = "softCockLength";
-const VARIABLE_SECONDS_TO_GET_SOFT = "secondsToGetSoft";
+    EDGE_A_TONS_DONE: "edgeATonsDone",
+    EDGE_A_TON_EDGE_RECORD: "edgeATonEdgeRecord",
 
-const VARIABLE_SUB_BIRTHDAY = "subBirthday";
+    STROKE_MODULE_PAUSE_FREQUENCY: 'strokeModulePauseFrequency',
 
-//Sub status
-const VARIABLE_SUB_IS_VIRGIN = 'subIsVirgin';
-const VARIABLE_SUB_IS_MARRIED = 'subIsMarried';
-const VARIABLE_SUB_HAS_GIRLFRIEND = 'toyGirlFriend';
 
-const VARIABLE_SUB_PARTNER_NAME = 'subPartnerName';
+    //Rules
+    LAST_RULE_PASSED: 'lastRulePassed',
 
-//Stats
-const VARIABLE_SESSION_COUNTER = "sessionCounter";
-const VARIABLE_ORGASM_COUNTER = "orgasmCounter";
-const VARIABLE_RUIN_COUNTER = "ruinCounter";
 
-const VARIABLE_EDGE_COUNTER = "edgeCounter";
-const VARIABLE_EDGE_TODAY_COUNTER = "edgeTodayCounter";
+    //Sub
+    DEVOTION: "subDevotion",
 
-//Full time
-const VARIABLE_LAST_ROUTINE_CHECK = "lastRoutineCheck";
-const VARIABLE_NEXT_WEEK_CHECK = "nextWeekCheck";
+    /**
+     * Number between 1 - 10
+     * @type {string}
+     */
+    SUB_PAIN_TOLERANCE: "subPainTolerance",
 
-const VARIABLE_WEEKLY_SLAVE_VISITS = "weeklySlaveVisits";
+    LAST_PAIN_TOLERANCE_INCREASE: "lastPainToleranceIncrease",
 
-const VARIABLE_SLAVE_LEAVE_UNTIL = "slaveLeaveUntil";
-const VARIABLE_SLAVE_VACATION_UNTIL = "slaveVacationUntil";
+    EDGE_STARTED_DATE: "edgeStartedDate",
 
-//Punishment
-const VARIABLE_PUNISHMENT_POINT_MULTIPLIER = "punishmentPointMultiplier";
-const VARIABLE_LAST_PUNISHMENT_POINT_CHANGE = "punishmentPointLastChange";
-const VARIABLE_PUNISHMENT_POINTS = "punishmentPoints";
+    SOFT_COCK_LENGTH: "softCockLength",
+    SECONDS_TO_GET_SOFT: "secondsToGetSoft",
 
-const VARIABLE_PUNISHMENT_ACTIVE = "punishmentActive";
+    SUB_BIRTHDAY: "subBirthday",
 
-const VARIABLE_PUNISHMENT_PUNISHER = "punishmentPunisher";
+    //Sub status
+    SUB_IS_VIRGIN: 'subIsVirgin',
+    SUB_IS_MARRIED: 'subIsMarried',
+    SUB_HAS_GIRLFRIEND: 'toyGirlFriend',
 
-const VARIABLE_PUNISHMENT_ENEMAS_TAKEN = "punishmentEnemasTaken";
+    SUB_PARTNER_NAME: 'subPartnerName',
 
-const VARIABLE_NEXT_CONFESSION_DAY = "nextConfessionDay";
-const VARIABLE_NEXT_PUNISHMENT_DAY = "nextPunishmentDay";
+    //Stats
+    SESSION_COUNTER: "sessionCounter",
+    ORGASM_COUNTER: "orgasmCounter",
+    RUIN_COUNTER: "ruinCounter",
 
+    EDGE_COUNTER: "edgeCounter",
+    EDGE_TODAY_COUNTER: "edgeTodayCounter",
 
+    //Full time
+    LAST_ROUTINE_CHECK: "lastRoutineCheck",
+    NEXT_WEEK_CHECK: "nextWeekCheck",
 
-const VARIABLE_FULL_TIME_TRIAL_UNTIL = "fullTimeTrialUntil";
+    WEEKLY_SLAVE_VISITS: "weeklySlaveVisits",
 
-const VARIABLE_LAST_TEASE_SESSION = "lastTeaseSession";
-const VARIABLE_CURRENT_SESSION_DATE = "currentSessionDate";
-const VARIABLE_CURRENT_SESSION_ACTIVE = "currentSessionActive";
+    SLAVE_LEAVE_UNTIL: "slaveLeaveUntil",
+    SLAVE_VACATION_UNTIL: "slaveVacationUntil",
 
-const VARIABLE_HAPPINESS = "happiness";
-const VARIABLE_LUST = "lust";
-const VARIABLE_ANGER = "anger";
+    //Punishment
+    PUNISHMENT_POINT_MULTIPLIER: "punishmentPointMultiplier",
+    LAST_PUNISHMENT_POINT_CHANGE: "punishmentPointLastChange",
+    PUNISHMENT_POINTS: "punishmentPoints",
 
-const VARIABLE_COMPLAINTS = 'complaints';
-const VARIABLE_UNALLOWED_TALKS = 'unallowedTalks';
-const VARIABLE_FORGETTING_HONORIFIC_COUNT = 'forgettingHonorificCount';
+    PUNISHMENT_ACTIVE: "punishmentActive",
 
-//End
-const VARIABLE_ACTIVE_END_GAME_ID = 'activeEndGameId';
+    PUNISHMENT_PUNISHER: "punishmentPunisher",
+
+    PUNISHMENT_ENEMAS_TAKEN: "punishmentEnemasTaken",
+
+    NEXT_CONFESSION_DAY: "nextConfessionDay",
+    NEXT_PUNISHMENT_DAY: "nextPunishmentDay",
+
+    PUNISHMENT_REASONS: "punishmentReasons",
+
+
+    FULL_TIME_TRIAL_UNTIL: "fullTimeTrialUntil",
+
+    //Session
+    LAST_TEASE_SESSION: "lastTeaseSession",
+    CURRENT_SESSION_DATE: "currentSessionDate",
+    CURRENT_SESSION_ACTIVE: "currentSessionActive",
+
+    LAST_PROLONGED_SESSION: "lastProlongedSession",
+
+    PROLONGED_SESSION_TIME: "prolongedSessionTime",
+
+    HAPPINESS: "happiness",
+    LUST: "lust",
+    ANGER: "anger",
+
+    COMPLAINTS: 'complaints',
+    UNALLOWED_TALKS: 'unallowedTalks',
+    FORGETTING_HONORIFIC_COUNT: 'forgettingHonorificCount',
+
+    //End
+    ACTIVE_END_GAME_ID: 'activeEndGameId',
+};
+
 
 //Module Categories
 const CATEGORY_HUMILATION = 'Humiliation';

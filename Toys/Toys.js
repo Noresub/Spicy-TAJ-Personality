@@ -33,38 +33,44 @@ const DEFAULT_TOY_COOLDOWN_MINUTES = 5;
 }
 
 
+//TODO: Track already fetched toys to not ask again and instead go like grab x
+
 function interactWithRandomToys() {
     const punishment = isOngoingPunishment();
 
     let allowPain = true;
 
     //No random pain toys if we are just doing an easy punishment
-    if(punishment && PUNISHMENT_CURRENT_LEVEL === PUNISHMENT_LEVEL_EASY && PUNISHMENT_OVERALL_LEVEL === PUNISHMENT_LEVEL_EASY) {
+    if (punishment && PUNISHMENT_CURRENT_LEVEL === PUNISHMENT_LEVEL.EASY && PUNISHMENT_OVERALL_LEVEL === PUNISHMENT_LEVEL.EASY) {
         allowPain = false;
     }
 
     //TODO: Could interact with buy new toys or fetish questions and better transition between different toys (additionally why not do this... etc.)
-    if (isChance(Math.max(25, getVar(VARIABLE_ASS_LEVEL, 0)) * 4) && getAnalLimit() === LIMIT_ASKED_YES) {
-        let action = shouldIncreasePlugSize();
+    if ((BUTTPLUG_TOY.isPunishmentAllowed() || !punishment && BUTTPLUG_TOY.isPlayAllowed()) && getAnalLimit() === LIMIT_ASKED_YES) {
+        //Starting chance for plug or already plugged anyway
+        if (isChance(Math.max(15, getVar(VARIABLE.ASS_LEVEL, 0)) * 4) || isPlugged()) {
+            let action = shouldIncreasePlugSize();
 
-        if (action === ACTION_BUTTPLUG_INCREASE_SIZE) {
-            increasePlugSize();
-        } else if (action === ACTION_BUTTPLUG_PUT_FIRST && hasButtplugToy()) {
-            let answers = ['Let\'s prepare your %Ass% for what is up to come %Grin%', 'Let\'s plug up that %Ass%', 'Let\'s not waste anymore time by leaving that %Ass% empty'];
+            if (action === ACTION_BUTTPLUG_INCREASE_SIZE) {
+                increasePlugSize();
+            } else if (action === ACTION_BUTTPLUG_PUT_FIRST && hasButtplugToy()) {
+                let answers = ['Let\'s prepare your %Ass% for what is up to come %Grin%', 'Let\'s plug up that %Ass%', 'Let\'s not waste anymore time by leaving that %Ass% empty'];
 
-            if (getVar(VARIABLE_ASS_LEVEL) >= 30) {
-                answers.push('You know that there is a very slow chance of you not being plugged and guess what - You won\'t be lucky now... %Lol%');
+                if (getVar(VARIABLE.ASS_LEVEL) >= 30) {
+                    answers.push('You know that there is a very slow chance of you not being plugged and guess what - You won\'t be lucky now... %Lol%');
+                }
+
+                sendMessage(answers[randomInteger(0, answers.length - 1)]);
+                putInButtplug();
+            } else if (action === ACTION_BUTTPLUG_WAIT_FOR_TIME) {
+
             }
-
-            sendMessage(answers[randomInteger(0, answers.length - 1)]);
-            putInButtplug();
-        } else if (action === ACTION_BUTTPLUG_WAIT_FOR_TIME) {
-
         }
     }
 
-    //TODO: Better decision?
-    if (!COLLAR_TOY.isToyOn() && isChance(20)) {
+
+    //TODO: Better decision? And check for rule collar always on
+    if (COLLAR_TOY.hasToy() && !COLLAR_TOY.isToyOn() && isChance(20)) {
         putOnCollar();
     }
 
@@ -90,7 +96,7 @@ function interactWithRandomToys() {
             distributeClamps(toDistribute);
         }
 
-        if(NIPPLE_CLAMPS.isToyOn() && isChance(25)) {
+        if (NIPPLE_CLAMPS.isToyOn() && isChance(25)) {
             removeNippleClamps();
         }
     }
@@ -105,9 +111,33 @@ function interactWithRandomToys() {
 
     if (hasBallsTied() && isChance(50)) {
         untieBalls();
-    } else if (!hasBallsTied() && !isInChastity() && isChance(20) && allowPain) {
+    } else if (!hasBallsTied() && !isInChastity() && isChance(20) && allowPain && !BODY_PART_BALLS.isUsed()) {
         tieBalls();
     }
+}
+
+/**
+ * Gets the time in minutes that should pass before we swap out a toy
+ * @returns {number}
+ */
+function getMinPlayTimeBeforeToySwap() {
+    return 7;
+}
+
+function removeAllToys() {
+    removeAllClamps();
+
+    removeGag();
+
+    if (isPlugged()) {
+        removeButtplug();
+    }
+
+    if (COLLAR_TOY.isToyOn()) {
+        removeCollar();
+    }
+
+    //TODO: Remove all other toys
 }
 
 function readyInput() {
@@ -265,7 +295,7 @@ function createToy(name) {
         name: name,
 
         hasToy: function () {
-            return getVar(this.getVarName());
+            return getVar(this.getVarName(), false);
         },
 
         setLastUsage: function () {
@@ -286,6 +316,14 @@ function createToy(name) {
 
         getVarName: function () {
             return 'toy' + name.replace(/ /g, "");
+        },
+
+        wasUsedInActiveContext: function () {
+            return getVar(this.getVarName() + 'Used', false);
+        },
+
+        setUsedInActiveContext: function (used) {
+            return setTempVar(this.getVarName() + 'Used', used);
         },
 
         isToyOn: function () {
@@ -328,11 +366,11 @@ function createToy(name) {
         },
 
         decideToyOn: function (asked = false) {
-            if(this.isToyOn()) {
+            if (this.isToyOn()) {
                 return false;
             }
 
-            if(!this.getLastRemoval().addMinute(DEFAULT_TOY_COOLDOWN_MINUTES).hasPassed()) {
+            if (!this.getLastRemoval().addMinute(DEFAULT_TOY_COOLDOWN_MINUTES).hasPassed()) {
                 return false;
             }
 
@@ -340,11 +378,11 @@ function createToy(name) {
         },
 
         decideToyOff: function (asked = false) {
-            if(!this.isToyOn()) {
+            if (!this.isToyOn()) {
                 return false;
             }
 
-            if(!this.getLastUsage().addMinute(DEFAULT_TOY_COOLDOWN_MINUTES).hasPassed()) {
+            if (!this.getLastUsage().addMinute(DEFAULT_TOY_COOLDOWN_MINUTES).hasPassed()) {
                 return false;
             }
 
@@ -393,7 +431,7 @@ function createToy(name) {
             }
 
             //Sub disabled this toy
-            if (getVar(variableName, false)) {
+            if (!getVar(variableName, false)) {
                 return;
             }
 
@@ -445,13 +483,7 @@ function createToy(name) {
     };
 }
 
-function setupToys(settings) {
-    sendVirtualAssistantMessage("Let's do a quick setup of your toys");
-    sendVirtualAssistantMessage("I'll show you some images of different stuff");
-    sendVirtualAssistantMessage("You will respond with yes if you have it");
-    sendVirtualAssistantMessage("You can also say yes if you have something similar that will work fine");
-    sendVirtualAssistantMessage("Respond with no if you have nothing similar");
-    sendVirtualAssistantMessage("Oh and one more thing...");
+function askForDomChoose() {
     sendVirtualAssistantMessage("Your Mistress prefers to use the toys whenever she wants to and for whatever reason");
     sendVirtualAssistantMessage("However she can understand if you only want them to be used for playing or punishment");
     sendVirtualAssistantMessage("Do you want to leave it to your Mistress or chose yourself?", false);
@@ -472,42 +504,54 @@ function setupToys(settings) {
         }
     }
 
+    return domChose;
+}
+
+function setupToys(settings) {
+    sendVirtualAssistantMessage("Let's do a quick setup of your toys");
+    sendVirtualAssistantMessage("I'll show you some images of different stuff");
+    sendVirtualAssistantMessage("You will respond with yes if you have it");
+    sendVirtualAssistantMessage("You can also say yes if you have something similar that will work fine");
+    sendVirtualAssistantMessage("Respond with no if you have nothing similar");
+    sendVirtualAssistantMessage("Oh and one more thing...");
+
+    let domChose = askForDomChoose();
+
+    //Ask for this in settings too
+    BUTTPLUG_TOY.askForToyAndUsage(domChose);
+
+    askForToy("Dildo");
+    askForToyUsage("Dildo", domChose);
+
     //Skip buttplug and dildos if we are in the settings
-    if (!settings) {
-        BUTTPLUG_TOY.askForToy();
-        BUTTPLUG_TOY.askForToyUsage(domChose);
+    if (!settings && hasButtplugToy()) {
+        sendVirtualAssistantMessage('Okay %SlaveName%. Tell me, how many different buttplugs do you have?', false);
+        answer = createInput();
 
-        if (hasButtplugToy()) {
-            sendVirtualAssistantMessage('Okay %SlaveName%. Tell me, how many different buttplugs do you have?', false);
-            answer = createInput();
-
-            while (true) {
-                if (answer.isInteger()) {
-                    const result = answer.getInt();
-                    if (result <= 0) {
-                        sendVirtualAssistantMessage("You can't choose a number equal to 0 or lower");
-                        answer.loop();
-                    } else {
-                        sendVirtualAssistantMessage('We are gonna setup your buttplugs now, one by one.');
-
-                        for (let x = 0; x < result; x++) {
-                            setupNewButtplug();
-                        }
-
-                        sendVirtualAssistantMessage('This should do it regarding plugs');
-                        sendVirtualAssistantMessage('You can always setup new buttplugs in the settings menu');
-                        break;
-                    }
-                } else {
-                    sendVirtualAssistantMessage("Please only enter a number such as 1 now.");
+        while (true) {
+            if (answer.isInteger()) {
+                const result = answer.getInt();
+                if (result <= 0) {
+                    sendVirtualAssistantMessage("You can't choose a number equal to 0 or lower");
                     answer.loop();
+                } else {
+                    sendVirtualAssistantMessage('We are gonna setup your buttplugs now, one by one.');
+
+                    for (let x = 0; x < result; x++) {
+                        setupNewButtplug();
+                    }
+
+                    sendVirtualAssistantMessage('This should do it regarding plugs');
+                    sendVirtualAssistantMessage('You can always setup new buttplugs in the settings menu');
+                    break;
                 }
+            } else {
+                sendVirtualAssistantMessage("Please only enter a number such as 1 now.");
+                answer.loop();
             }
         }
 
         sendVirtualAssistantMessage(random("Okay then...", "Next...", "Let's see...", "Moving on..."));
-        askForToy("Dildo");
-        askForToyUsage("Dildo", domChose);
 
         if (hasDildoToy()) {
             sendVirtualAssistantMessage('Okay %SlaveName%. Tell me, how many different dildos do you have?', false);
@@ -540,13 +584,17 @@ function setupToys(settings) {
         sendVirtualAssistantMessage(random("Okay then...", "Next...", "Let's see...", "Moving on..."));
     }
 
-    //TODO: Create toys as objects
+//TODO: Create toys as objects
     askForToy("Ball Crusher");
     askForToyUsage("BallCrusher", domChose);
     sendVirtualAssistantMessage(random("Okay then...", "Next...", "Let's see...", "Moving on..."));
 
     INFLATABLE_BUTT_PLUG.askForToyAndUsage(domChose);
-    INFLATABLE_BUTT_PLUG.askForVibration();
+
+    //Only if the sub has the toy we should ask this
+    if (INFLATABLE_BUTT_PLUG.hasToy()) {
+        INFLATABLE_BUTT_PLUG.askForVibration();
+    }
 
     COLLAR_TOY.askForToyAndUsage(domChose);
 
@@ -555,11 +603,15 @@ function setupToys(settings) {
     askForToyUsage("ShockCollar", domChose);
 
     sendVirtualAssistantMessage(random("Okay then...", "Next...", "Let's see...", "Moving on..."));
-    askForToy("EStim");
+
+    sendVirtualAssistantMessage('Now let\'s talk about e-stim devices');
+    setupEStimToy(domChose);
+
+    /*askForToy("EStim");
     askForToyUsage("EStim", domChose);
     sendVirtualAssistantMessage(random("Okay then...", "Next...", "Let's see...", "Moving on..."));
 
-    //TODO: Improve estim setup
+//TODO: Improve estim setup
     if (isVar('toyEStim')) {
         sendVirtualAssistantMessage("Tell me what level of shock you consider to be quite painful", false)
         answer = createInput();
@@ -599,7 +651,7 @@ function setupToys(settings) {
                 answer.loop();
             }
         }
-    }
+    }*/
 
     setupGags(domChose);
     sendVirtualAssistantMessage(random("Okay then...", "Next...", "Let's see...", "Moving on..."));
@@ -653,7 +705,7 @@ function setupToys(settings) {
 
     CLOTHESPINS_TOY.askForToyAndUsage(domChose);
 
-    //TODO: Different type of nipple clamps
+//TODO: Different type of nipple clamps
     sendVirtualAssistantMessage('Okay next quite similar but not the same %Grin%');
     NIPPLE_CLAMPS.askForToyAndUsage(domChose);
     sendVirtualAssistantMessage(random("Okay then...", "Next...", "Let's see...", "Moving on..."));

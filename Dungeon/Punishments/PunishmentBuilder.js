@@ -9,19 +9,24 @@ let PUNISHMENT_SCORE = 0;
 let PUNISHMENT_CURRENT_LEVEL = 'null';
 let PUNISHMENT_OVERALL_LEVEL = 'null';
 
-const PUNISHMENT_LEVEL_EASY = {name: 'easy', id: 0};
-const PUNISHMENT_LEVEL_MEDIUM =  {name: 'medium', id: 1};
-const PUNISHMENT_LEVEL_HARD =  {name: 'hard', id: 2};
-const PUNISHMENT_LEVEL_EXTREME =  {name: 'extreme', id: 3};
+const PUNISHMENT_LEVEL = {
+     EASY: {name: 'easy', id: 0},
+     MEDIUM:  {name: 'medium', id: 1},
+     HARD:  {name: 'hard', id: 2},
+     EXTREME:  {name: 'extreme', id: 3}
+};
 
 function isOngoingPunishment() {
-    return getVar(VARIABLE_PUNISHMENT_ACTIVE, false);
+    return getVar(VARIABLE.PUNISHMENT_ACTIVE, false);
 }
 
 function startPunishmentSession(overallLevel) {
+    setVar(VARIABLE.PUNISHMENT_ACTIVE, true);
     PUNISHMENT_OVERALL_LEVEL = overallLevel;
 
-    switch(getVar(VARIABLE_PUNISHMENT_PUNISHER)) {
+    sendDebugMessage('Starting punishment with level ' + overallLevel);
+
+    switch(getVar(VARIABLE.PUNISHMENT_PUNISHER)) {
         case 1 :
             break;
         case 2 :
@@ -38,20 +43,79 @@ function startPunishmentSession(overallLevel) {
             break;
     }
 
+    sleep(3);
+
+    if(!sendGreeting()) {
+        //TODO: Punish
+    }
+
+    PUNISHMENT_SCORE = (overallLevel.id + 1)*3;
 
     while (PUNISHMENT_SCORE > 0) {
         let level = null;
 
         //First punishment is always gonna be easy
         if(PUNISHMENTS_DONE === 0) {
-            level = PUNISHMENT_LEVEL_EASY;
+            level = PUNISHMENT_LEVEL.EASY;
         } else {
+            let levels = [];
 
+            switch(overallLevel) {
+                case PUNISHMENT_LEVEL.EASY:
+                    levels.push(PUNISHMENT_LEVEL.EASY);
+                    break;
+                case PUNISHMENT_LEVEL.MEDIUM:
+                    levels.push(PUNISHMENT_LEVEL.EASY);
+                    levels.push(overallLevel);
+                    break;
+                case PUNISHMENT_LEVEL.HARD:
+                    levels.push(PUNISHMENT_LEVEL.MEDIUM);
+                    levels.push(overallLevel);
+                    break;
+                case PUNISHMENT_LEVEL.EXTREME:
+                    levels.push(PUNISHMENT_LEVEL.HARD);
+                    levels.push(overallLevel);
+                    break;
+            }
+
+            level = levels[randomInteger(0, levels.length - 1)];
         }
 
         PUNISHMENT_CURRENT_LEVEL = level;
 
+        sendDebugMessage('Next punishment level ' + PUNISHMENT_CURRENT_LEVEL);
+
         interactWithRandomToys();
+
+        runPunishment(PUNISHMENT_CURRENT_LEVEL);
+        subtractPunishmentPointsForPunishment(PUNISHMENT_CURRENT_LEVEL);
+    }
+
+    //TODO: More variety
+    sendMessage('I think that should be sufficient for now %Grin%');
+
+    removeAllToys();
+
+    sendMessage('You hopefully learned your lesson %SlaveName%');
+
+    setSender(1);
+    setVar(VARIABLE.PUNISHMENT_ACTIVE, false);
+}
+
+function subtractPunishmentPointsForPunishment(PUNISHMENT_LEVEL) {
+    switch(PUNISHMENT_LEVEL) {
+        case PUNISHMENT_LEVEL.EASY:
+            addPunishmentPoints(-randomInteger(40, 70));
+            break;
+        case PUNISHMENT_LEVEL.MEDIUM:
+            addPunishmentPoints(-randomInteger(60, 100));
+            break;
+        case PUNISHMENT_LEVEL.HARD:
+            addPunishmentPoints(-randomInteger(90, 140));
+            break;
+        case PUNISHMENT_LEVEL.EXTREME:
+            addPunishmentPoints(-randomInteger(140, 200));
+            break;
     }
 }
 
@@ -70,6 +134,9 @@ function runPunishment(level) {
     if (getFile(getPersonalityPath() + PATH_SEPARATOR + levelPath).exists()) {
         paths.push(levelPath + PATH_SEPARATOR + "*.js");
     }
+
+    //Any punishments
+    paths.push('Dungeon' + PATH_SEPARATOR + 'Punishments' + PATH_SEPARATOR + 'Any' + PATH_SEPARATOR + "*.js");
 
     //Keep track of how many times we tried to find a module in a category since last decide punishment call
     setTempVar('findPunishmentTries', getVar('findPunishmentTries', 0) + 1);
@@ -118,16 +185,16 @@ function tryRunPunishment(punishmentId, punishmentCategory, level, minModulesSin
 
     //Reduce the score by the set amount
     switch (level) {
-        case PUNISHMENT_LEVEL_EASY:
+        case PUNISHMENT_LEVEL.EASY:
             PUNISHMENT_SCORE -= 1;
             break;
-        case PUNISHMENT_LEVEL_MEDIUM:
+        case PUNISHMENT_LEVEL.MEDIUM:
             PUNISHMENT_SCORE -= 2;
             break;
-        case PUNISHMENT_LEVEL_HARD:
+        case PUNISHMENT_LEVEL.HARD:
             PUNISHMENT_SCORE -= 3;
             break;
-        case PUNISHMENT_LEVEL_EXTREME:
+        case PUNISHMENT_LEVEL.EXTREME:
             PUNISHMENT_SCORE -= 5;
             break;
     }
@@ -143,5 +210,5 @@ function tryRunPunishment(punishmentId, punishmentCategory, level, minModulesSin
 }
 
 function getPunishmentTypeCategoryPath(level) {
-    return 'Dungeon' + PATH_SEPARATOR + 'Punishments' + PATH_SEPARATOR + level;
+    return 'Dungeon' + PATH_SEPARATOR + 'Punishments' + PATH_SEPARATOR + capitalize(level.name);
 }

@@ -7,11 +7,11 @@ const analTasks = [];
         id: taskId++, exp: 27, minLevel: 1,
 
         sendInstructions: function () {
-            sendMessage("I want you to wear your " + getButtplugSize() + " butt plug for " + getButtplugTaskDurationHours() + " hours today");
+            sendMessage("I want you to wear your " +  + getButtplugForTask().name +  " for " + getButtplugTaskDurationHours() + " hours today");
         },
 
         isApplicable: function () {
-            return getVar(VARIABLE_ASS_LEVEL) >= this.minLevel;
+            return getVar(VARIABLE.ASS_LEVEL) >= this.minLevel;
         },
     };
     analTasks.push(analTask);
@@ -24,7 +24,7 @@ const analTasks = [];
         },
 
         isApplicable: function () {
-            return getVar(VARIABLE_ASS_LEVEL) >= this.minLevel;
+            return getVar(VARIABLE.ASS_LEVEL) >= this.minLevel;
         },
     };
     analTasks.push(analTask);
@@ -35,20 +35,20 @@ const analTasks = [];
         sendInstructions: function () {
             let walkDuration = randomInteger(5, 10);
 
-            if (getVar(VARIABLE_ASS_LEVEL) >= 20) {
+            if (getVar(VARIABLE.ASS_LEVEL) >= 20) {
                 walkDuration = randomInteger(15, 20);
-            } else if (getVar(VARIABLE_ASS_LEVEL) >= 10) {
+            } else if (getVar(VARIABLE.ASS_LEVEL) >= 10) {
                 walkDuration = randomInteger(10, 15);
             }
 
-            sendMessage("I want you to wear your " + getButtplugSize() + " butt plug for " + getButtplugTaskDurationHours() + " hours today");
+            sendMessage("I want you to wear your " +  getButtplugForTask().name + " for " + getButtplugTaskDurationHours() + " hours today");
             sendMessage("But while wearing the plug");
-            sendMessage("I want you to go a for a " + walkDuration + " minute walk");
+            sendMessage("I want you to go for a " + walkDuration + " minute walk");
             sendMessage(random("I want you to learn to move around with it ", "It will be good for your health as well ", "You should thank me for encouraging you to do a little exercise "));
         },
 
         isApplicable: function () {
-            return getVar(VARIABLE_ASS_LEVEL) >= this.minLevel;
+            return getVar(VARIABLE.ASS_LEVEL) >= this.minLevel;
         },
     };
     analTasks.push(analTask);
@@ -61,7 +61,7 @@ const analTasks = [];
         },
 
         isApplicable: function () {
-            return getVar(VARIABLE_ASS_LEVEL) >= this.minLevel;
+            return getVar(VARIABLE.ASS_LEVEL) >= this.minLevel;
         },
     };
     analTasks.push(analTask);
@@ -70,11 +70,11 @@ const analTasks = [];
         id: taskId++, exp: 45, minLevel: 15,
 
         sendInstructions: function () {
-            sendMessage("I want you to spend the whole night wearing your " + getButtplugSize() + " butt plug");
+            sendMessage("I want you to spend the whole night wearing your " + getButtplugForTask().name);
         },
 
         isApplicable: function () {
-            return getVar(VARIABLE_ASS_LEVEL) >= this.minLevel;
+            return getVar(VARIABLE.ASS_LEVEL) >= this.minLevel;
         },
     };
     analTasks.push(analTask);
@@ -83,11 +83,11 @@ const analTasks = [];
         id: taskId++, exp: 50, minLevel: 20,
 
         sendInstructions: function () {
-            sendMessage("I want you to spend the whole day wearing your " + getButtplugSize() + " butt plug");
+            sendMessage("I want you to spend the whole day wearing your " +  getButtplugForTask().name);
         },
 
         isApplicable: function () {
-            return getVar(VARIABLE_ASS_LEVEL) >= this.minLevel;
+            return getVar(VARIABLE.ASS_LEVEL) >= this.minLevel;
         },
     };
     analTasks.push(analTask);
@@ -97,9 +97,9 @@ const analTasks = [];
         id: taskId++, exp: 55, minLevel: 25,
 
         sendInstructions: function () {
-            sendMessage("I want you to spend the whole night wearing your " + getButtplugSize() + " butt plug");
+            sendMessage("I want you to spend the whole night wearing your " + getButtplugForTask().name);
             sendMessage("However.. %Grin%");
-            sendMessage("I want you to either use a vibrating one or attach your vibrator to it");
+            sendMessage("I want you to either swap it for a vibrating one or attach your vibrator to it");
             sendMessage("Then I want you to turn it on and leave it on for the night");
             sendMessage("Maybe it is a battery powered toy and you will find some rest when it runs out of power");
             sendMessage("But maybe it will never run out of power and torture you for the whole night %Lol%");
@@ -114,7 +114,7 @@ const analTasks = [];
         },
 
         isApplicable: function () {
-            return getVar(VARIABLE_ASS_LEVEL) >= this.minLevel && hasVibrator();
+            return getVar(VARIABLE.ASS_LEVEL) >= this.minLevel && hasVibrator();
         },
     };
     analTasks.push(analTask);
@@ -133,7 +133,7 @@ function getRandomAnalTask(array) {
 }
 
 function getDildoTaskDurationMinutes() {
-    return randomInteger(getVar(VARIABLE_ASS_LEVEL), getVar(VARIABLE_ASS_LEVEL) + 5);
+    return randomInteger(getVar(VARIABLE.ASS_LEVEL), getVar(VARIABLE.ASS_LEVEL) + 5);
 }
 
 
@@ -142,11 +142,11 @@ function getButtplugTaskDurationHours() {
 
     switch(enemaLevel) {
         case 5:
-            return 8;
+            return 10;
         case 4:
-            return 6;
+            return 8;
         case 3:
-            return 5;
+            return 6;
         case 2:
             return 4;
         case 1:

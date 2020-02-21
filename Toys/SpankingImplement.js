@@ -5,6 +5,7 @@ function fetchSpankingImplement(level = -1) {
 
     if(level == -1) {
         const mood = getMood();
+        sendDebugMessage('Choosing spanking implement based on mood ' + mood);
 
         //Different choices based on mood of dome and strictness
         if(mood == ANNOYED_MOOD || getStrictnessForCharacter() == 2 && mood == NEUTRAL_MOOD) {
@@ -28,8 +29,10 @@ function fetchSpankingImplement(level = -1) {
             break;
     }
 
+    sendDebugMessage('Choose spanking implement ' + spankingImplement + ' with level ' + level)
+
     //We don't need to fetch 'hand'
-    if(spankingImplement.toLowerCase() === 'hand' || spankingImplement.toLowerCase() === 'palm') {
+    if(isHandPalm(spankingImplement)) {
         return spankingImplement;
     }
 
@@ -47,4 +50,8 @@ function fetchSpankingImplement(level = -1) {
     }
 
     return spankingImplement;
+}
+
+function isHandPalm(spankingImplement) {
+    return spankingImplement.toLowerCase() === 'hand' || spankingImplement.toLowerCase() === 'palm';
 }
